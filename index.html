@@ -1,0 +1,1636 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PXLPAL</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:      #2a2a2e;
+      --orange:  #e8714a;
+      --purple:  #9b8ff5;
+      --green:   #5ecb7a;
+      --yellow:  #e8c84a;
+      --pink:    #e8728a;
+      --ink:     #28282e;
+      --text-on-color: #1e1e22;
+      --text-ui: #eceae4;
+      --muted:   #888;
+      --r: 4px;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text-ui);
+      font-family: 'DM Sans', sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding-bottom: 100px;
+    }
+
+    /* ── Header — full-width orange block ── */
+    header {
+      width: 100%;
+      background: var(--orange);
+      text-align: center;
+      padding: 52px 24px 48px;
+    }
+
+    .badge {
+      display: block;
+      color: rgba(0,0,0,0.38);
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    h1 {
+      font-family: 'Instrument Serif', serif;
+      font-size: clamp(4.5rem, 13vw, 10rem);
+      font-weight: 400;
+      line-height: 0.88;
+      letter-spacing: -0.01em;
+      color: var(--text-on-color);
+    }
+
+    .subtitle {
+      margin-top: 14px;
+      color: rgba(0,0,0,0.38);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+    }
+
+    /* ── Page body ── */
+    .page-body {
+      width: 100%;
+      max-width: 1200px;
+      padding: 24px 24px 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* ── Drop zone — solid yellow block ── */
+    .drop-zone {
+      width: 100%;
+      max-width: 680px;
+      background: var(--yellow);
+      border: none;
+      border-radius: var(--r);
+      padding: 52px 40px;
+      text-align: center;
+      cursor: pointer;
+      transition: filter 0.12s;
+      position: relative;
+    }
+
+    .drop-zone:hover, .drop-zone.drag-over { filter: brightness(1.06); }
+
+    .drop-zone input[type="file"] {
+      position: absolute; inset: 0; opacity: 0;
+      cursor: pointer; width: 100%; height: 100%;
+    }
+
+    .drop-icon { font-size: 38px; margin-bottom: 10px; display: block; }
+    .drop-zone p { font-size: 15px; font-weight: 600; color: rgba(0,0,0,0.45); line-height: 1.8; }
+    .drop-zone strong { color: var(--text-on-color); font-weight: 800; }
+
+    .error-msg {
+      width: 100%; max-width: 680px;
+      font-size: 13px; font-weight: 600;
+      color: var(--pink); padding: 0 2px;
+    }
+
+    /* ── Options bar — solid ink block ── */
+    .options-bar {
+      width: 100%; max-width: 680px;
+      background: var(--ink);
+      border-radius: var(--r);
+      padding: 14px 20px;
+      display: flex; flex-wrap: wrap;
+      gap: 14px; align-items: center;
+    }
+
+    .opt-group { display: flex; align-items: center; gap: 10px; }
+
+    .opt-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; color: var(--muted);
+      text-transform: uppercase; white-space: nowrap;
+    }
+
+    .pill-group { display: flex; gap: 5px; }
+
+    .pill {
+      background: rgba(255,255,255,0.07);
+      border: none; color: #999;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 600;
+      padding: 6px 15px; border-radius: var(--r);
+      cursor: pointer; transition: background 0.1s, color 0.1s;
+    }
+
+    .pill:hover  { background: rgba(255,255,255,0.12); color: var(--text-ui); }
+    .pill.active { background: var(--orange); color: var(--text-on-color); }
+
+    .slider-wrap { display: flex; align-items: center; gap: 10px; }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      width: 90px; height: 3px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 2px; outline: none; border: none;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 14px; height: 14px;
+      background: var(--orange); border-radius: 50%; cursor: pointer;
+    }
+
+    .slider-val { font-size: 13px; font-weight: 700; color: var(--orange); min-width: 28px; }
+
+    .number-input {
+      background: rgba(255,255,255,0.07); border: none;
+      color: var(--text-ui);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 600;
+      padding: 6px 10px; border-radius: var(--r);
+      width: 68px; outline: none;
+    }
+
+    .number-input:focus { background: rgba(255,255,255,0.12); }
+
+    .divider { width: 1px; height: 22px; background: rgba(255,255,255,0.08); }
+
+    .process-btn {
+      background: var(--green); border: none;
+      color: var(--text-on-color);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 800;
+      padding: 9px 24px; border-radius: var(--r);
+      cursor: pointer; letter-spacing: 0.03em;
+      transition: filter 0.1s; white-space: nowrap;
+    }
+
+    .process-btn:hover  { filter: brightness(1.08); }
+    .process-btn:active { filter: brightness(0.95); }
+    .process-btn:disabled { opacity: 0.35; cursor: default; filter: none; }
+
+    /* ── Workspace ── */
+    .workspace {
+      width: 100%; max-width: 1200px;
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 10px; margin-top: 0;
+    }
+
+    /* Each panel is ONE flat color, top to bottom */
+    .panel {
+      display: flex; flex-direction: column;
+      min-height: 320px; border-radius: var(--r);
+      overflow: hidden;
+    }
+
+    .panel + .panel { border-left: none; }
+
+    .panel-left  { background: var(--orange); }
+    .panel-right { background: var(--purple); }
+
+    .panel-header {
+      display: flex; align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px 12px;
+      flex-shrink: 0;
+      background: transparent;  /* inherits panel color */
+    }
+
+    .panel-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 22px; font-weight: 400;
+      color: var(--text-on-color);
+      display: flex; align-items: center; gap: 8px;
+    }
+
+    .panel-title .dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: rgba(0,0,0,0.2);
+    }
+
+    .panel-count {
+      font-size: 12px; font-weight: 700;
+      color: var(--text-on-color);
+      background: rgba(0,0,0,0.12);
+      border-radius: var(--r);
+      padding: 3px 10px;
+    }
+
+    /* Grid area — same flat color, slightly darker */
+    .panel-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 10px; padding: 10px 14px 14px;
+      flex: 1; align-content: start;
+      background: rgba(0,0,0,0.18);
+    }
+
+    .panel-empty {
+      flex: 1;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 48px 24px;
+      background: rgba(0,0,0,0.18);
+      color: rgba(0,0,0,0.3);
+      font-size: 13px; font-weight: 600;
+      text-align: center; gap: 8px; line-height: 1.8;
+    }
+
+    .panel-empty-icon { font-size: 28px; opacity: 0.25; }
+
+    /* ── Cards ── */
+    .panel-left .card { position: relative; }
+
+    .card-remove {
+      position: absolute; top: 7px; right: 7px;
+      width: 24px; height: 24px;
+      background: rgba(0,0,0,0.4); border: none;
+      border-radius: 50%; color: #fff;
+      font-size: 12px; line-height: 1;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      opacity: 0; transition: opacity 0.1s, background 0.1s;
+      z-index: 10;
+    }
+
+    .panel-left .card:hover .card-remove { opacity: 1; }
+    .card-remove:hover { background: var(--pink) !important; }
+
+    .card-badge-row {
+      display: flex;
+      border-top: 1px solid rgba(0,0,0,0.12);
+    }
+
+    .crop-badge, .censor-badge {
+      flex: 1;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 800;
+      color: rgba(0,0,0,0.4);
+      background: transparent;
+      text-align: center; padding: 7px 4px;
+      letter-spacing: 0.1em; cursor: pointer;
+      transition: background 0.1s, color 0.1s;
+      white-space: nowrap; text-transform: uppercase;
+    }
+
+    .crop-badge + .censor-badge { border-left: 1px solid rgba(0,0,0,0.12); }
+    .crop-badge:hover,   .censor-badge:hover  { background: rgba(0,0,0,0.1); color: rgba(0,0,0,0.65); }
+    .crop-badge.active   { background: rgba(0,0,0,0.15); color: rgba(0,0,0,0.7); }
+    .censor-badge.active { background: rgba(0,0,0,0.2);  color: rgba(0,0,0,0.7); }
+
+    @media (max-width: 680px) {
+      .workspace { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background: #f5f3ee;
+      border: none; border-radius: var(--r);
+      overflow: hidden;
+      animation: fadeUp 0.2s ease both;
+      transition: filter 0.1s;
+    }
+
+    .card:hover { filter: brightness(0.97); }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .card-thumb {
+      width: 100%; height: auto; display: block;
+      background: #ddd; cursor: pointer;
+    }
+
+    .crop-hint { display: none; }
+
+    .card-body { padding: 9px 11px 11px; }
+
+    .card-name {
+      font-size: 11px; font-weight: 600; color: #333;
+      white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+      margin-bottom: 3px;
+    }
+
+    .card-meta {
+      font-size: 10px; font-weight: 600; color: #999;
+      margin-bottom: 9px;
+      display: flex; gap: 6px; flex-wrap: wrap;
+    }
+
+    .saved { color: #2a8a3a; }
+    .grew  { color: var(--orange); }
+
+    .card-actions { display: flex; gap: 5px; }
+
+    .dl-btn {
+      flex: 1;
+      background: var(--ink); color: #e8e6e0;
+      border: none; border-radius: var(--r);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 800;
+      padding: 7px; cursor: pointer;
+      letter-spacing: 0.04em; text-transform: uppercase;
+      transition: filter 0.1s;
+    }
+
+    .dl-btn:hover { filter: brightness(1.4); }
+
+    .crop-btn {
+      background: rgba(0,0,0,0.06); border: none;
+      color: #555;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 11px; font-weight: 700;
+      padding: 7px 12px; border-radius: var(--r);
+      cursor: pointer; transition: background 0.1s;
+    }
+
+    .crop-btn:hover { background: rgba(0,0,0,0.1); }
+
+    /* ── Bulk bar ── */
+    .bulk-bar {
+      width: 100%; max-width: 1200px;
+      display: flex; justify-content: flex-end; gap: 8px;
+    }
+
+    .bulk-btn {
+      background: var(--ink); color: #ccc;
+      border: none;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 700;
+      padding: 9px 18px; border-radius: var(--r);
+      cursor: pointer; text-transform: uppercase;
+      letter-spacing: 0.04em; transition: filter 0.1s;
+    }
+
+    .bulk-btn:hover { filter: brightness(1.4); color: #eee; }
+    .bulk-btn.primary { background: var(--purple); color: var(--text-on-color); }
+
+    .hint {
+      margin-top: 48px; text-align: center;
+      color: #444; font-size: 12px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase; line-height: 2;
+    }
+
+    /* ── Lightbox ── */
+    .lightbox {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.94);
+      z-index: 2000; display: none;
+      align-items: center; justify-content: center;
+      flex-direction: column; gap: 16px; cursor: zoom-out;
+      animation: fadein 0.15s ease;
+    }
+
+    .lightbox.open { display: flex; }
+
+    .lightbox-img {
+      max-width: 92vw; max-height: 85vh;
+      object-fit: contain; border-radius: var(--r);
+      pointer-events: none;
+    }
+
+    .lightbox-name {
+      font-size: 12px; font-weight: 600;
+      color: #555; letter-spacing: 0.08em; pointer-events: none;
+    }
+
+    /* ── Modals ── */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(0,0,0,0.85);
+      z-index: 1000; display: flex;
+      align-items: center; justify-content: center;
+      padding: 10px; animation: fadein 0.15s ease;
+    }
+
+    @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
+
+    .modal {
+      background: #242427; border: none; border-radius: var(--r);
+      width: 100%; max-width: 1100px; max-height: 96vh;
+      display: flex; flex-direction: column; overflow: hidden;
+    }
+
+    .modal-header {
+      padding: 14px 22px; border-bottom: none;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-shrink: 0; background: var(--purple);
+    }
+
+    .modal-title {
+      font-family: 'Instrument Serif', serif;
+      font-size: 24px; font-weight: 400;
+      color: var(--text-on-color);
+    }
+
+    .modal-close {
+      background: rgba(0,0,0,0.18); border: none;
+      color: var(--text-on-color); font-size: 15px; font-weight: 700;
+      cursor: pointer; padding: 5px 10px;
+      border-radius: var(--r); transition: background 0.1s; line-height: 1.3;
+    }
+
+    .modal-close:hover { background: rgba(0,0,0,0.3); }
+
+    .crop-area {
+      flex: 1; overflow: auto;
+      display: flex; align-items: center; justify-content: center;
+      padding: 18px; background: #111;
+      position: relative; min-height: 200px;
+    }
+
+    @media (max-width: 600px) {
+      .crop-area { justify-content: flex-end; padding-left: 44px; padding-right: 12px; }
+    }
+
+    .crop-canvas-wrap {
+      position: relative; display: inline-block;
+      cursor: crosshair; user-select: none; -webkit-user-select: none;
+    }
+
+    #cropCanvas { display: block; max-width: 100%; }
+
+    #cropBox {
+      position: absolute;
+      border: 2px solid var(--green);
+      box-shadow: 0 0 0 9999px rgba(0,0,0,0.6);
+      cursor: move; display: none;
+    }
+
+    .crop-handle {
+      position: absolute; width: 10px; height: 10px;
+      background: var(--green); border: 2px solid #111;
+      border-radius: 1px; z-index: 2;
+    }
+
+    .handle-nw { top:-6px; left:-6px; cursor:nw-resize; }
+    .handle-ne { top:-6px; right:-6px; cursor:ne-resize; }
+    .handle-sw { bottom:-6px; left:-6px; cursor:sw-resize; }
+    .handle-se { bottom:-6px; right:-6px; cursor:se-resize; }
+    .handle-n  { top:-6px; left:50%; transform:translateX(-50%); cursor:n-resize; }
+    .handle-s  { bottom:-6px; left:50%; transform:translateX(-50%); cursor:s-resize; }
+    .handle-w  { left:-6px; top:50%; transform:translateY(-50%); cursor:w-resize; }
+    .handle-e  { right:-6px; top:50%; transform:translateY(-50%); cursor:e-resize; }
+
+    .crop-info {
+      position: absolute; bottom: 12px; left: 50%;
+      transform: translateX(-50%);
+      background: var(--green); color: var(--text-on-color);
+      font-size: 11px; font-weight: 800;
+      padding: 3px 14px; border-radius: var(--r);
+      pointer-events: none; white-space: nowrap;
+    }
+
+    .modal-footer {
+      padding: 12px 22px; border-top: none;
+      display: flex; gap: 8px; align-items: center;
+      flex-wrap: wrap; flex-shrink: 0;
+      background: #1e1e21;
+    }
+
+    .aspect-btns { display: flex; gap: 5px; }
+
+    .aspect-btn {
+      background: rgba(255,255,255,0.07); border: none; color: #777;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 12px; font-weight: 700;
+      padding: 5px 12px; border-radius: var(--r);
+      cursor: pointer; transition: background 0.1s, color 0.1s;
+    }
+
+    .aspect-btn:hover  { background: rgba(255,255,255,0.12); color: #bbb; }
+    .aspect-btn.active { background: var(--green); color: var(--text-on-color); }
+
+    .modal-actions { display: flex; gap: 8px; margin-left: auto; }
+
+    .btn-secondary {
+      background: rgba(255,255,255,0.07); border: none; color: #999;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 700;
+      padding: 8px 18px; border-radius: var(--r);
+      cursor: pointer; transition: background 0.1s, color 0.1s;
+    }
+
+    .btn-secondary:hover { background: rgba(255,255,255,0.12); color: #ccc; }
+
+    .btn-primary {
+      background: var(--green); border: none;
+      color: var(--text-on-color);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 13px; font-weight: 800;
+      padding: 8px 22px; border-radius: var(--r);
+      cursor: pointer; transition: filter 0.1s;
+    }
+
+    .btn-primary:hover { filter: brightness(1.08); }
+
+    @media (max-width: 520px) {
+      .options-bar { flex-direction: column; align-items: flex-start; }
+      .modal-footer { flex-direction: column; }
+      .modal-actions { margin-left: 0; }
+      .divider { display: none; }
+    }
+</style>
+</head>
+<body>
+
+  <header>
+    <p class="badge">Client-side · Private · Free</p>
+    <h1>PXLPAL</h1>
+    <p class="subtitle">Convert · Compress · Resize · Crop</p>
+  </header>
+
+  <div class="page-body">
+  <div class="drop-zone" id="dropZone">
+    <input type="file" id="fileInput" accept="image/*,.heic,.HEIC" multiple />
+    <span class="drop-icon">⬇</span>
+    <p><strong>Click to browse</strong> or drag &amp; drop images here</p>
+    <p>JPG · PNG · WebP · HEIC · GIF · BMP · Multiple files</p>
+  </div>
+
+  <div class="error-msg" id="errorMsg"></div>
+
+  <div class="options-bar" id="optionsBar" style="display:none;">
+    <div class="opt-group">
+      <span class="opt-label">Output</span>
+      <div class="pill-group" id="formatGroup">
+        <button class="pill active" data-fmt="image/jpeg">JPG</button>
+        <button class="pill" data-fmt="image/png">PNG</button>
+        <button class="pill" data-fmt="image/webp">WebP</button>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="opt-group" id="qualityGroup">
+      <span class="opt-label">Quality</span>
+      <div class="slider-wrap">
+        <input type="range" id="qualitySlider" min="10" max="100" value="82" step="1" />
+        <span class="slider-val" id="qualityDisplay">82%</span>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="opt-group">
+      <span class="opt-label">Max W</span>
+      <input type="number" class="number-input" id="maxWidth" placeholder="px" min="10" max="8000" />
+    </div>
+
+    <div class="opt-group">
+      <span class="opt-label">Max H</span>
+      <input type="number" class="number-input" id="maxHeight" placeholder="px" min="10" max="8000" />
+    </div>
+
+    <div style="margin-left:auto;">
+      <button class="process-btn" id="processBtn">Process</button>
+    </div>
+  </div>
+
+  <div class="workspace" id="workspace" style="display:none;">
+    <!-- Left: originals -->
+    <div class="panel panel-left">
+      <div class="panel-header">
+        <div class="panel-title"><span class="dot"></span>Originals</div>
+        <span class="panel-count" id="leftCount">0</span>
+      </div>
+      <div class="panel-grid" id="panelLeft"></div>
+    </div>
+    <!-- Right: processed -->
+    <div class="panel panel-right">
+      <div class="panel-header">
+        <div class="panel-title"><span class="dot"></span>Processed</div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <span class="panel-count" id="rightCount">0</span>
+          <button class="bulk-btn primary" id="downloadAllBtn" style="display:none;">ZIP all</button>
+        </div>
+      </div>
+      <div class="panel-grid" id="panelRight">
+        <div class="panel-empty" id="rightEmpty">
+          <span class="panel-empty-icon">→</span>
+          <span>Processed images<br>will appear here</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bulk-bar" id="bulkBar" style="display:none;">
+    <button class="bulk-btn" id="clearBtn">Clear all</button>
+  </div>
+
+  <div class="hint" id="hint">
+    <p>Your files never leave your device.</p>
+    <p>All processing happens locally in your browser.</p>
+  </div>
+
+  <!-- Crop Modal -->
+  <div class="modal-overlay" id="cropModal" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Crop Image</span>
+        <button class="modal-close" id="modalClose">✕</button>
+      </div>
+      <div class="crop-area">
+        <div class="crop-canvas-wrap" id="canvasWrap">
+          <canvas id="cropCanvas"></canvas>
+          <div id="cropBox">
+            <div class="crop-handle handle-nw" data-handle="nw"></div>
+            <div class="crop-handle handle-ne" data-handle="ne"></div>
+            <div class="crop-handle handle-sw" data-handle="sw"></div>
+            <div class="crop-handle handle-se" data-handle="se"></div>
+            <div class="crop-handle handle-n"  data-handle="n"></div>
+            <div class="crop-handle handle-s"  data-handle="s"></div>
+            <div class="crop-handle handle-w"  data-handle="w"></div>
+            <div class="crop-handle handle-e"  data-handle="e"></div>
+          </div>
+          <div class="crop-info" id="cropInfo">drag to select area</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="opt-label">Aspect</span>
+        <div class="aspect-btns" id="aspectBtns">
+          <button class="aspect-btn active" data-aspect="free">Free</button>
+          <button class="aspect-btn" data-aspect="1:1">1:1</button>
+          <button class="aspect-btn" data-aspect="4:3">4:3</button>
+          <button class="aspect-btn" data-aspect="16:9">16:9</button>
+          <button class="aspect-btn" data-aspect="3:2">3:2</button>
+        </div>
+        <button class="aspect-btn" id="rotateAspectBtn" title="Rotate aspect ratio" style="display:none;">⇄</button>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="resetCropBtn">Reset</button>
+          <button class="btn-primary" id="applyCropBtn">Apply Crop</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  </div><!-- end .page-body -->
+
+  <!-- Censor Modal -->
+  <div class="modal-overlay" id="censorModal" style="display:none;">
+    <div class="modal">
+      <div class="modal-header">
+        <span class="modal-title">Censor Regions</span>
+        <button class="modal-close" id="censorModalClose">✕</button>
+      </div>
+      <div class="crop-area">
+        <div class="crop-canvas-wrap" id="censorCanvasWrap">
+          <canvas id="censorCanvas"></canvas>
+          <div class="crop-info" id="censorInfo">drag to select region</div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <span class="opt-label">Type</span>
+        <div class="pill-group" id="censorTypeGroup">
+          <button class="pill active" data-censor="pixelate">Pixelate</button>
+          <button class="pill" data-censor="blur">Blur</button>
+          <button class="pill" data-censor="blackbox">Black Box</button>
+        </div>
+        <div class="opt-group" id="censorStrengthGroup">
+          <span class="opt-label">Strength</span>
+          <div class="slider-wrap">
+            <input type="range" id="censorStrengthSlider" min="0" max="10" value="5" step="1" />
+            <span class="slider-val" id="censorStrengthVal">5</span>
+          </div>
+        </div>
+        <div class="modal-actions">
+          <button class="btn-secondary" id="censorUndoBtn">↩ Undo</button>
+          <button class="btn-secondary" id="censorClearBtn">Clear all</button>
+          <button class="btn-primary" id="censorApplyBtn">Apply</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Lightbox -->
+  <div class="lightbox" id="lightbox">
+    <img class="lightbox-img" id="lightboxImg" src="" alt="" />
+    <div class="lightbox-name" id="lightboxName"></div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+  <script>
+  // ── State ─────────────────────────────────────────────────────────────────
+  let outputFormat = 'image/jpeg';
+  let quality      = 0.82;
+
+  // sourceFiles[i] = { file, dataUrl, cropRect | null }
+  // cropRect is set when the user crops a source image (in natural px)
+  let sourceFiles    = [];
+  let convertedFiles = []; // populated only after Process is clicked
+
+  // ── DOM ───────────────────────────────────────────────────────────────────
+  const dropZone       = document.getElementById('dropZone');
+  const fileInput      = document.getElementById('fileInput');
+  const panelLeft      = document.getElementById('panelLeft');
+  const panelRight     = document.getElementById('panelRight');
+  const rightEmpty     = document.getElementById('rightEmpty');
+  const leftCount      = document.getElementById('leftCount');
+  const rightCount     = document.getElementById('rightCount');
+  const workspace      = document.getElementById('workspace');
+  const optionsBar     = document.getElementById('optionsBar');
+  const errorMsg       = document.getElementById('errorMsg');
+  const bulkBar        = document.getElementById('bulkBar');
+  const hint           = document.getElementById('hint');
+  const qualitySlider  = document.getElementById('qualitySlider');
+  const qualityDisplay = document.getElementById('qualityDisplay');
+  const qualityGroup   = document.getElementById('qualityGroup');
+  const maxWidthInput  = document.getElementById('maxWidth');
+  const maxHeightInput = document.getElementById('maxHeight');
+  const processBtn     = document.getElementById('processBtn');
+
+  // ── Format pills ──────────────────────────────────────────────────────────
+  document.querySelectorAll('#formatGroup .pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#formatGroup .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      outputFormat = btn.dataset.fmt;
+      qualityGroup.style.display = outputFormat === 'image/png' ? 'none' : 'flex';
+    });
+  });
+
+  qualitySlider.addEventListener('input', () => {
+    quality = qualitySlider.value / 100;
+    qualityDisplay.textContent = qualitySlider.value + '%';
+  });
+
+  // ── Drop / file input ─────────────────────────────────────────────────────
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    handleFiles([...e.dataTransfer.files]);
+  });
+  fileInput.addEventListener('change', () => { handleFiles([...fileInput.files]); fileInput.value = ''; });
+
+  function handleFiles(files) {
+    errorMsg.textContent = '';
+    const imgs = files.filter(f => f.type.startsWith('image/') || f.name.toLowerCase().endsWith('.heic'));
+    if (!imgs.length) { errorMsg.textContent = '⚠ No image files found.'; return; }
+    if (imgs.length < files.length)
+      errorMsg.textContent = `ℹ ${files.length - imgs.length} non-image file(s) skipped.`;
+    imgs.forEach(addSourceFile);
+    workspace.style.display = 'grid';
+    optionsBar.style.display = 'flex';
+    bulkBar.style.display = 'flex';
+    hint.style.display = 'none';
+  }
+
+  // ── Left panel: source files ───────────────────────────────────────────────
+  function addSourceFile(file) {
+    const idx = sourceFiles.length;
+    sourceFiles.push({ file, dataUrl: null, cropRect: null, censors: [], previewUrl: null });
+
+    const reader = new FileReader();
+    reader.onload = ev => {
+      sourceFiles[idx].dataUrl = ev.target.result;
+      renderSourceCard(idx);
+    };
+    reader.readAsDataURL(file);
+  }
+
+  // Build previewUrl from scratch: crop the original, then bake censors on top
+  function buildPreviewUrl(idx, callback) {
+    const src = sourceFiles[idx];
+    const img = new Image();
+    img.onload = () => {
+      const cr = src.cropRect;
+      const sx = cr ? cr.x : 0, sy = cr ? cr.y : 0;
+      const sw = cr ? cr.w : img.naturalWidth, sh = cr ? cr.h : img.naturalHeight;
+
+      const canvas = document.createElement('canvas');
+      canvas.width = sw; canvas.height = sh;
+      const c = canvas.getContext('2d');
+      c.drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+
+      // Bake censors — coords are in natural-image px, offset by crop origin
+      if (src.censors && src.censors.length) {
+        // _baseImg needed by eraser path; set it temporarily
+        canvas._baseImg = img;
+        // For erase (s=0), we need to restore from the cropped region
+        // so create a small erase-base canvas of just the cropped area
+        const eraseBase = document.createElement('canvas');
+        eraseBase.width = sw; eraseBase.height = sh;
+        eraseBase.getContext('2d').drawImage(img, sx, sy, sw, sh, 0, 0, sw, sh);
+        canvas._baseImg = eraseBase;
+        // Override censorScale for this pass (1:1 natural coords)
+        const savedScale = censorScale;
+        censorScale = 1;
+        src.censors.forEach(cen => {
+          if ((cen.strength ?? 5) === 0) return;
+          const rx = cen.x - sx, ry = cen.y - sy;
+          applyCensorRegion(c, canvas, rx, ry, cen.w, cen.h, cen.type, cen.strength);
+        });
+        censorScale = savedScale;
+      }
+
+      callback(canvas.toDataURL());
+    };
+    img.src = src.dataUrl;
+  }
+
+  function renderSourceCard(idx) {
+    const src      = sourceFiles[idx];
+    const existing = panelLeft.querySelector(`[data-src-idx="${idx}"]`);
+    const hasCrop  = !!src.cropRect;
+
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.srcIdx = idx;
+
+    // Thumb: show cropped preview if set, otherwise full image
+    const thumbImg = document.createElement('img');
+    thumbImg.className = 'card-thumb';
+    thumbImg.src = src.previewUrl || src.dataUrl;
+    thumbImg.alt = src.file.name;
+    thumbImg.title = 'Click to set crop';
+    thumbImg.addEventListener('click', () => openCropModal(idx));
+
+    // Crop badge
+    const cropBadge = document.createElement('div');
+    cropBadge.className = 'crop-badge' + (hasCrop ? ' active' : '');
+    cropBadge.textContent = hasCrop ? 'CROP ✓' : 'CROP';
+    cropBadge.addEventListener('click', () => openCropModal(idx));
+
+    // Censor badge
+    const hasCensors = src.censors && src.censors.length > 0;
+    const censorBadge = document.createElement('div');
+    censorBadge.className = 'censor-badge' + (hasCensors ? ' active' : '');
+    censorBadge.textContent = hasCensors ? `CENSOR (${src.censors.length})` : 'CENSOR';
+    censorBadge.addEventListener('click', () => openCensorModal(idx));
+
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'card-name';
+    nameEl.title = src.file.name;
+    nameEl.textContent = src.file.name;
+
+    const meta = document.createElement('div');
+    meta.className = 'card-meta';
+
+    const sz = document.createElement('span');
+    sz.textContent = formatBytes(src.file.size);
+
+    const cropMeta = document.createElement('span');
+    if (hasCrop) {
+      cropMeta.textContent = `${src.cropRect.w}×${src.cropRect.h}`;
+      cropMeta.style.color = 'var(--accent)';
+    }
+    meta.append(sz, cropMeta);
+
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
+
+    if (hasCrop) {
+      const clearCrop = document.createElement('button');
+      clearCrop.className = 'crop-btn';
+      clearCrop.style.fontSize = '10px';
+      clearCrop.style.padding  = '5px 10px';
+      clearCrop.textContent = 'CLEAR CROP';
+      clearCrop.addEventListener('click', e => {
+        e.stopPropagation();
+        sourceFiles[idx].cropRect = null;
+        sourceFiles[idx].previewUrl = null;
+        buildPreviewUrl(idx, url => {
+          sourceFiles[idx].previewUrl = url;
+          renderSourceCard(idx);
+        });
+      });
+      actions.appendChild(clearCrop);
+    }
+
+    body.append(nameEl, meta, actions);
+    const removeBtn = document.createElement('button');
+    removeBtn.className = 'card-remove';
+    removeBtn.title = 'Remove image';
+    removeBtn.textContent = '✕';
+    removeBtn.addEventListener('click', e => {
+      e.stopPropagation();
+      sourceFiles.splice(idx, 1);
+      // Re-index remaining cards
+      panelLeft.innerHTML = '';
+      sourceFiles.forEach((_, i) => renderSourceCard(i));
+      leftCount.textContent = sourceFiles.length;
+      if (!sourceFiles.length) {
+        workspace.style.display = 'none';
+        optionsBar.style.display = 'none';
+        bulkBar.style.display = 'none';
+        hint.style.display = '';
+      }
+    });
+
+    const badgeRow = document.createElement('div');
+    badgeRow.className = 'card-badge-row';
+    badgeRow.append(cropBadge, censorBadge);
+    card.append(removeBtn, thumbImg, badgeRow, body);
+
+    if (existing) {
+      existing.replaceWith(card);
+    } else {
+      panelLeft.appendChild(card);
+    }
+
+    leftCount.textContent = sourceFiles.length;
+  }
+
+  // ── Process button ────────────────────────────────────────────────────────
+  processBtn.addEventListener('click', () => {
+    if (!sourceFiles.length) return;
+
+    // Clear previous results
+    convertedFiles.forEach(f => URL.revokeObjectURL(f.url));
+    convertedFiles = [];
+    panelRight.innerHTML = '';
+    rightCount.textContent = '0';
+    document.getElementById('downloadAllBtn').style.display = 'none';
+
+    processBtn.disabled = true;
+    processBtn.textContent = '⏳ Processing…';
+
+    let pending = sourceFiles.length;
+
+    sourceFiles.forEach((src, i) => {
+      processSourceFile(src, i, () => {
+        pending--;
+        if (pending === 0) {
+          processBtn.disabled = false;
+          processBtn.textContent = 'Process';
+          document.getElementById('downloadAllBtn').style.display = 'inline-block';
+        }
+      });
+    });
+  });
+
+  function processSourceFile(src, i, onDone) {
+    const img = new Image();
+    img.onload = () => {
+      const cr = src.cropRect;
+      let sx = 0, sy = 0, sw = img.naturalWidth, sh = img.naturalHeight;
+      if (cr) { sx = cr.x; sy = cr.y; sw = cr.w; sh = cr.h; }
+
+      let dw = sw, dh = sh;
+      const mw = parseInt(maxWidthInput.value) || 0;
+      const mh = parseInt(maxHeightInput.value) || 0;
+      if (mw > 0 && dw > mw) { dh = Math.round(dh * mw / dw); dw = mw; }
+      if (mh > 0 && dh > mh) { dw = Math.round(dw * mh / dh); dh = mh; }
+
+      const canvas = document.createElement('canvas');
+      canvas.width = dw; canvas.height = dh;
+      const c = canvas.getContext('2d');
+      if (outputFormat === 'image/jpeg') { c.fillStyle = '#fff'; c.fillRect(0, 0, dw, dh); }
+      c.drawImage(img, sx, sy, sw, sh, 0, 0, dw, dh);
+
+      // Apply censor regions (coords are in natural image px, adjust for crop+scale)
+      if (src.censors && src.censors.length) {
+        const scaleX = dw / sw;
+        const scaleY = dh / sh;
+        src.censors.forEach(cen => {
+          if ((cen.strength ?? 5) === 0) return; // strength 0 = erased, skip
+          const rx = Math.round((cen.x - sx) * scaleX);
+          const ry = Math.round((cen.y - sy) * scaleY);
+          const rw = Math.round(cen.w * scaleX);
+          const rh = Math.round(cen.h * scaleY);
+          if (rw <= 0 || rh <= 0) return;
+          applyCensorRegion(c, canvas, rx, ry, rw, rh, cen.type, cen.strength);
+        });
+      }
+
+      const ext = outputFormat === 'image/jpeg' ? 'jpg' : outputFormat === 'image/png' ? 'png' : 'webp';
+      const outName = src.file.name.replace(/\.[^.]+$/, '') + '.' + ext;
+
+      canvas.toBlob(blob => {
+        const url = URL.createObjectURL(blob);
+        const entry = { name: outName, blob, url, origSize: src.file.size };
+        const idx = convertedFiles.length;
+        convertedFiles.push(entry);
+        appendProcessedCard(idx, entry, dw, dh);
+        rightCount.textContent = convertedFiles.length;
+        onDone();
+      }, outputFormat, quality);
+    };
+    img.src = src.dataUrl;
+  }
+
+  // ── Right panel: processed cards ──────────────────────────────────────────
+  function appendProcessedCard(idx, entry, dw, dh) {
+    const card = buildProcessedCard(idx, entry, dw, dh);
+    card.style.animationDelay = (Math.min(idx, 8) * 0.04) + 's';
+    panelRight.appendChild(card);
+  }
+
+  function buildProcessedCard(idx, entry, dw, dh) {
+    const { name, blob, url, origSize } = entry;
+    const diff = origSize - blob.size;
+    const pct  = origSize > 0 ? Math.abs((diff / origSize) * 100).toFixed(0) : 0;
+    const grew = diff < 0;
+
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const thumb = document.createElement('img');
+    thumb.className = 'card-thumb';
+    thumb.src = url; thumb.alt = name;
+
+    const body = document.createElement('div');
+    body.className = 'card-body';
+
+    const nameEl = document.createElement('div');
+    nameEl.className = 'card-name';
+    nameEl.title = name; nameEl.textContent = name;
+
+    const meta = document.createElement('div');
+    meta.className = 'card-meta';
+
+    const dim = document.createElement('span'); dim.textContent = `${dw}×${dh}`;
+    const sz  = document.createElement('span'); sz.textContent = formatBytes(blob.size);
+    const sv  = document.createElement('span');
+    sv.className = grew ? 'grew' : 'saved';
+    sv.textContent = grew ? `+${pct}% larger` : pct > 0 ? `−${pct}% saved` : 'same size';
+    meta.append(dim, sz, sv);
+
+    const actions = document.createElement('div');
+    actions.className = 'card-actions';
+
+    const dlBtn = document.createElement('button');
+    dlBtn.className = 'dl-btn';
+    dlBtn.textContent = '↓ Save';
+    dlBtn.addEventListener('click', () => triggerDownload(url, name));
+
+    actions.append(dlBtn);
+    body.append(nameEl, meta, actions);
+    thumb.style.cursor = 'zoom-in';
+    thumb.addEventListener('click', () => openLightbox(url, name));
+    card.append(thumb, body);
+    return card;
+  }
+
+  function formatBytes(b) {
+    if (b < 1024) return b + ' B';
+    if (b < 1048576) return (b / 1024).toFixed(1) + ' KB';
+    return (b / 1048576).toFixed(2) + ' MB';
+  }
+
+  function triggerDownload(url, name) {
+    const a = document.createElement('a');
+    a.href = url; a.download = name; a.click();
+  }
+
+  // ── Bulk ZIP ──────────────────────────────────────────────────────────────
+  document.getElementById('downloadAllBtn').addEventListener('click', async () => {
+    const btn = document.getElementById('downloadAllBtn');
+    btn.textContent = 'Zipping…'; btn.disabled = true;
+    const zip = new JSZip();
+    convertedFiles.forEach(f => zip.file(f.name, f.blob));
+    const zipBlob = await zip.generateAsync({ type: 'blob' });
+    const url = URL.createObjectURL(zipBlob);
+    triggerDownload(url, 'images.zip');
+    setTimeout(() => URL.revokeObjectURL(url), 10000);
+    btn.textContent = 'ZIP all'; btn.disabled = false;
+  });
+
+  // ── Clear ─────────────────────────────────────────────────────────────────
+  document.getElementById('clearBtn').addEventListener('click', () => {
+    convertedFiles.forEach(f => URL.revokeObjectURL(f.url));
+    convertedFiles = [];
+    sourceFiles    = [];
+    panelLeft.innerHTML  = '';
+    panelRight.innerHTML = '';
+    const emptyDiv = document.createElement('div');
+    emptyDiv.className = 'panel-empty';
+    emptyDiv.id = 'rightEmpty';
+    emptyDiv.innerHTML = '<span class="panel-empty-icon">→</span><span>Processed images<br>will appear here</span>';
+    panelRight.appendChild(emptyDiv);
+    leftCount.textContent  = '0';
+    rightCount.textContent = '0';
+    document.getElementById('downloadAllBtn').style.display = 'none';
+    workspace.style.display  = 'none';
+    optionsBar.style.display = 'none';
+    bulkBar.style.display    = 'none';
+    hint.style.display       = '';
+    errorMsg.textContent     = '';
+    processBtn.textContent   = 'Process';
+    processBtn.disabled      = false;
+  });
+
+  // ── CROP MODAL (operates on source files) ─────────────────────────────────
+  const modal      = document.getElementById('cropModal');
+  const cropCanvas = document.getElementById('cropCanvas');
+  const cropBox    = document.getElementById('cropBox');
+  const cropInfo   = document.getElementById('cropInfo');
+  const canvasWrap = document.getElementById('canvasWrap');
+  const ctx2d      = cropCanvas.getContext('2d');
+
+  let cropIdx   = null;  // index into sourceFiles
+  let scale     = 1;
+  let aspect    = null;
+  let cropState = { x: 0, y: 0, w: 0, h: 0 };
+  let dragMode  = null;
+  let dragStart = { x: 0, y: 0 };
+  let boxStart  = { x: 0, y: 0, w: 0, h: 0 };
+
+  function openCropModal(idx) {
+    cropIdx = idx;
+    const src = sourceFiles[idx];
+    const srcImg = new Image();
+    srcImg.onload = () => {
+      const maxW = Math.min(1060, window.innerWidth - 32);
+      const maxH = Math.min(window.innerHeight - 180, window.innerHeight * 0.72);
+      scale = Math.min(maxW / srcImg.naturalWidth, maxH / srcImg.naturalHeight, 1);
+      cropCanvas.width  = Math.round(srcImg.naturalWidth  * scale);
+      cropCanvas.height = Math.round(srcImg.naturalHeight * scale);
+      ctx2d.clearRect(0, 0, cropCanvas.width, cropCanvas.height);
+      ctx2d.drawImage(srcImg, 0, 0, cropCanvas.width, cropCanvas.height);
+
+      // Restore previous crop if set
+      if (src.cropRect) {
+        cropState = {
+          x: Math.round(src.cropRect.x * scale),
+          y: Math.round(src.cropRect.y * scale),
+          w: Math.round(src.cropRect.w * scale),
+          h: Math.round(src.cropRect.h * scale),
+        };
+      } else {
+        cropState = { x: 0, y: 0, w: cropCanvas.width, h: cropCanvas.height };
+      }
+
+      showCropBox();
+      modal.style.display = 'flex';
+
+      document.querySelectorAll('.aspect-btn').forEach(b => b.classList.remove('active'));
+      document.querySelector('.aspect-btn[data-aspect="free"]').classList.add('active');
+      rotateAspectBtn.style.display = 'none';
+      aspect = null;
+    };
+    srcImg.src = src.dataUrl;
+  }
+
+  document.getElementById('modalClose').addEventListener('click', closeModal);
+  let overlayMousedownOnSelf = false;
+  modal.addEventListener('mousedown', e => { overlayMousedownOnSelf = e.target === modal; });
+  modal.addEventListener('mouseup',   e => { if (overlayMousedownOnSelf && e.target === modal) closeModal(); overlayMousedownOnSelf = false; });
+
+  function closeModal() {
+    modal.style.display = 'none';
+    cropIdx = null;
+  }
+
+  // Aspect ratio buttons
+  const rotateAspectBtn = document.getElementById('rotateAspectBtn');
+
+  document.querySelectorAll('.aspect-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.aspect-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const v = btn.dataset.aspect;
+      if (v === 'free') {
+        aspect = null;
+        rotateAspectBtn.style.display = 'none';
+        return;
+      }
+      const [aw, ah] = v.split(':').map(Number);
+      aspect = aw / ah;
+      // Show rotate btn only for non-square ratios
+      rotateAspectBtn.style.display = aw !== ah ? 'inline-block' : 'none';
+      if (cropState.w > 0) {
+        cropState.h = Math.round(cropState.w / aspect);
+        clampCropState();
+        showCropBox();
+      }
+    });
+  });
+
+  rotateAspectBtn.addEventListener('click', () => {
+    if (!aspect) return;
+    aspect = 1 / aspect;
+    // Swap the crop box dimensions
+    const cx = cropState.x + cropState.w / 2;
+    const cy = cropState.y + cropState.h / 2;
+    const newW = Math.round(cropState.h);
+    const newH = Math.round(cropState.w);
+    cropState.w = newW;
+    cropState.h = newH;
+    cropState.x = Math.round(cx - newW / 2);
+    cropState.y = Math.round(cy - newH / 2);
+    clampCropState();
+    showCropBox();
+  });
+
+  document.getElementById('resetCropBtn').addEventListener('click', () => {
+    cropState = { x: 0, y: 0, w: cropCanvas.width, h: cropCanvas.height };
+    showCropBox();
+  });
+
+  // Apply: save crop rect + generate a cropped preview from the live canvas
+  document.getElementById('applyCropBtn').addEventListener('click', () => {
+    if (cropIdx === null) return;
+    const rect = {
+      x: Math.round(cropState.x / scale),
+      y: Math.round(cropState.y / scale),
+      w: Math.round(cropState.w / scale),
+      h: Math.round(cropState.h / scale),
+    };
+    sourceFiles[cropIdx].cropRect = rect;
+
+    const idxToRender = cropIdx;
+    closeModal();
+    buildPreviewUrl(idxToRender, url => {
+      sourceFiles[idxToRender].previewUrl = url;
+      renderSourceCard(idxToRender);
+    });
+  });
+
+  function showCropBox() {
+    cropBox.style.display = 'block';
+    cropBox.style.left   = cropState.x + 'px';
+    cropBox.style.top    = cropState.y + 'px';
+    cropBox.style.width  = cropState.w + 'px';
+    cropBox.style.height = cropState.h + 'px';
+    cropInfo.textContent = `${Math.round(cropState.w / scale)} × ${Math.round(cropState.h / scale)} px`;
+  }
+
+  function clampCropState() {
+    const CW = cropCanvas.width, CH = cropCanvas.height;
+    cropState.w = Math.max(10, Math.min(cropState.w, CW));
+    cropState.h = Math.max(10, Math.min(cropState.h, CH));
+    if (aspect) {
+      if (cropState.w / aspect > CH) cropState.w = Math.round(CH * aspect);
+      cropState.h = Math.round(cropState.w / aspect);
+      if (cropState.h > CH) { cropState.h = CH; cropState.w = Math.round(CH * aspect); }
+      if (cropState.w > CW) { cropState.w = CW; cropState.h = Math.round(CW / aspect); }
+    }
+    cropState.x = Math.max(0, Math.min(cropState.x, CW - cropState.w));
+    cropState.y = Math.max(0, Math.min(cropState.y, CH - cropState.h));
+  }
+
+  function getPos(e) {
+    const r = canvasWrap.getBoundingClientRect();
+    const c = e.touches ? e.touches[0] : e;
+    return { x: c.clientX - r.left, y: c.clientY - r.top };
+  }
+
+  canvasWrap.addEventListener('mousedown', startDrag);
+  canvasWrap.addEventListener('touchstart', startDrag, { passive: false });
+
+  function startDrag(e) {
+    e.preventDefault();
+    const pos = getPos(e);
+    const tgt = e.target;
+    if (tgt.classList.contains('crop-handle')) {
+      dragMode = tgt.dataset.handle;
+    } else if (tgt === cropBox) {
+      dragMode = 'move';
+    } else {
+      dragMode = 'draw';
+      cropState = { x: pos.x, y: pos.y, w: 0, h: 0 };
+      cropBox.style.display = 'block';
+    }
+    dragStart = { ...pos };
+    boxStart  = { ...cropState };
+    window.addEventListener('mousemove', onDrag);
+    window.addEventListener('mouseup',   endDrag);
+    window.addEventListener('touchmove', onDrag,  { passive: false });
+    window.addEventListener('touchend',  endDrag);
+  }
+
+  function onDrag(e) {
+    e.preventDefault();
+    const pos = getPos(e);
+    const dx = pos.x - dragStart.x;
+    const dy = pos.y - dragStart.y;
+    const CW = cropCanvas.width, CH = cropCanvas.height;
+
+    if (dragMode === 'draw') {
+      let x = Math.min(dragStart.x, pos.x);
+      let y = Math.min(dragStart.y, pos.y);
+      let w = Math.abs(dx);
+      let h = Math.abs(dy);
+      if (aspect) {
+        w = Math.min(w, CW - x);
+        h = w / aspect;
+        if (y + h > CH) { h = CH - y; w = h * aspect; }
+        if (pos.y < dragStart.y) y = dragStart.y - h;
+        y = Math.max(0, y);
+      }
+      cropState = { x, y, w, h };
+    } else if (dragMode === 'move') {
+      cropState.x = Math.max(0, Math.min(boxStart.x + dx, CW - boxStart.w));
+      cropState.y = Math.max(0, Math.min(boxStart.y + dy, CH - boxStart.h));
+      cropState.w = boxStart.w;
+      cropState.h = boxStart.h;
+    } else {
+      let { x, y, w, h } = boxStart;
+      if (dragMode.includes('e')) w = Math.max(10, boxStart.w + dx);
+      if (dragMode.includes('s')) h = Math.max(10, boxStart.h + dy);
+      if (dragMode.includes('w')) { x = boxStart.x + dx; w = Math.max(10, boxStart.w - dx); }
+      if (dragMode.includes('n')) { y = boxStart.y + dy; h = Math.max(10, boxStart.h - dy); }
+      if (aspect) {
+        if (dragMode.includes('e') || dragMode.includes('w')) h = w / aspect;
+        else w = h * aspect;
+      }
+      cropState = { x, y, w, h };
+    }
+    clampCropState();
+    showCropBox();
+  }
+
+  function endDrag() {
+    dragMode = null;
+    window.removeEventListener('mousemove', onDrag);
+    window.removeEventListener('mouseup',   endDrag);
+    window.removeEventListener('touchmove', onDrag);
+    window.removeEventListener('touchend',  endDrag);
+    if (cropState.w < 5 || cropState.h < 5) {
+      cropState = { x: 0, y: 0, w: cropCanvas.width, h: cropCanvas.height };
+      showCropBox();
+    }
+  }
+  // ── Censor helper ────────────────────────────────────────────────────────
+  function applyCensorRegion(ctx, canvas, rx, ry, rw, rh, type, strength) {
+    rx = Math.max(0, rx); ry = Math.max(0, ry);
+    rw = Math.min(rw, canvas.width  - rx);
+    rh = Math.min(rh, canvas.height - ry);
+    if (rw <= 0 || rh <= 0) return;
+    const s = (strength ?? 5);
+
+    // s=0 → erase: redraw the original image pixels back into this region
+    if (s === 0) {
+      const baseImg = canvas._baseImg;
+      if (baseImg) {
+        // natural coords of this region
+        const nx = Math.round(rx / censorScale);
+        const ny = Math.round(ry / censorScale);
+        const nw = Math.round(rw / censorScale);
+        const nh = Math.round(rh / censorScale);
+        ctx.drawImage(baseImg, nx, ny, nw, nh, rx, ry, rw, rh);
+      }
+      return;
+    }
+
+    if (type === 'blackbox') {
+      ctx.fillStyle = '#000';
+      ctx.fillRect(rx, ry, rw, rh);
+
+    } else if (type === 'pixelate') {
+      // s=1 → very small blocks (barely visible), s=10 → very coarse
+      // block size: s=1→2px, s=10→ ~region/8
+      const maxBlock = Math.max(4, Math.round(Math.min(rw, rh) / 8));
+      const blockSize = Math.max(2, Math.round((maxBlock / 10) * s));
+      for (let y = ry; y < ry + rh; y += blockSize) {
+        for (let x = rx; x < rx + rw; x += blockSize) {
+          const bw = Math.min(blockSize, rx + rw - x);
+          const bh = Math.min(blockSize, ry + rh - y);
+          const pixel = ctx.getImageData(x + Math.floor(bw/2), y + Math.floor(bh/2), 1, 1).data;
+          ctx.fillStyle = `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
+          ctx.fillRect(x, y, bw, bh);
+        }
+      }
+
+    } else if (type === 'blur') {
+      // s=1 → barely blurred (scale=0.85), s=10 → very blurry (scale=0.02)
+      const blurScale = 0.85 - (s - 1) * 0.092; // 1→0.85, 10→0.022
+      const tiny = document.createElement('canvas');
+      tiny.width  = Math.max(1, Math.round(rw * blurScale));
+      tiny.height = Math.max(1, Math.round(rh * blurScale));
+      const tc = tiny.getContext('2d');
+      tc.drawImage(canvas, rx, ry, rw, rh, 0, 0, tiny.width, tiny.height);
+      ctx.imageSmoothingEnabled = true;
+      ctx.imageSmoothingQuality = 'low';
+      ctx.drawImage(tiny, 0, 0, tiny.width, tiny.height, rx, ry, rw, rh);
+    }
+  }
+
+  // ── Censor Modal ──────────────────────────────────────────────────────────
+  const censorModal      = document.getElementById('censorModal');
+  const censorCanvas     = document.getElementById('censorCanvas');
+  const censorCanvasWrap = document.getElementById('censorCanvasWrap');
+  const censorInfo       = document.getElementById('censorInfo');
+  const censorCtx        = censorCanvas.getContext('2d');
+
+  let censorIdx       = null;
+  let censorScale     = 1;
+  let censorType      = 'pixelate';
+  let censorStrength  = 5;
+
+  const censorStrengthSlider = document.getElementById('censorStrengthSlider');
+  const censorStrengthVal    = document.getElementById('censorStrengthVal');
+  const censorStrengthGroup  = document.getElementById('censorStrengthGroup');
+
+  censorStrengthSlider.addEventListener('input', () => {
+    censorStrength = parseInt(censorStrengthSlider.value);
+    censorStrengthVal.textContent = censorStrength;
+  });
+  let censorRegions   = [];   // committed regions: {x,y,w,h,type} in natural px
+  let censorDragStart = null;
+  let censorDragCurrent = null;
+  let censorDragging  = false;
+
+  function openCensorModal(idx) {
+    censorIdx = idx;
+    const src = sourceFiles[idx];
+    censorRegions = src.censors ? [...src.censors] : [];
+
+    const srcImg = new Image();
+    srcImg.onload = () => {
+      const maxW = Math.min(1060, window.innerWidth - 32);
+      const maxH = Math.min(window.innerHeight - 180, window.innerHeight * 0.72);
+      censorScale = Math.min(maxW / srcImg.naturalWidth, maxH / srcImg.naturalHeight, 1);
+      censorCanvas.width  = Math.round(srcImg.naturalWidth  * censorScale);
+      censorCanvas.height = Math.round(srcImg.naturalHeight * censorScale);
+
+      // Store base image for redraws
+      censorCanvas._baseImg = srcImg;
+      redrawCensorCanvas();
+      censorModal.style.display = 'flex';
+      censorInfo.textContent = 'drag to select region';
+    };
+    srcImg.src = src.dataUrl;
+
+    // Reset type pills
+    document.querySelectorAll('#censorTypeGroup .pill').forEach(b => b.classList.remove('active'));
+    document.querySelector('#censorTypeGroup .pill[data-censor="pixelate"]').classList.add('active');
+    censorType = 'pixelate';
+    censorStrength = 5;
+    censorStrengthSlider.value = 5;
+    censorStrengthVal.textContent = '5';
+    censorStrengthGroup.style.display = 'flex';
+  }
+
+  function redrawCensorCanvas() {
+    const img = censorCanvas._baseImg;
+    if (!img) return;
+    censorCtx.clearRect(0, 0, censorCanvas.width, censorCanvas.height);
+    censorCtx.drawImage(img, 0, 0, censorCanvas.width, censorCanvas.height);
+
+    // Apply committed regions as preview
+    censorRegions.forEach(r => {
+      const rx = Math.round(r.x * censorScale);
+      const ry = Math.round(r.y * censorScale);
+      const rw = Math.round(r.w * censorScale);
+      const rh = Math.round(r.h * censorScale);
+      applyCensorRegion(censorCtx, censorCanvas, rx, ry, rw, rh, r.type, r.strength);
+    });
+
+    // Draw live selection box if dragging
+    if (censorDragging && censorDragStart && censorDragCurrent) {
+      const x = Math.min(censorDragStart.x, censorDragCurrent.x);
+      const y = Math.min(censorDragStart.y, censorDragCurrent.y);
+      const w = Math.abs(censorDragCurrent.x - censorDragStart.x);
+      const h = Math.abs(censorDragCurrent.y - censorDragStart.y);
+      censorCtx.strokeStyle = '#d4f04e';
+      censorCtx.lineWidth = 2;
+      censorCtx.setLineDash([6, 3]);
+      censorCtx.strokeRect(x, y, w, h);
+      censorCtx.setLineDash([]);
+      censorInfo.textContent = `${Math.round(w/censorScale)} × ${Math.round(h/censorScale)} px`;
+    }
+  }
+
+  // Type pills
+  document.querySelectorAll('#censorTypeGroup .pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#censorTypeGroup .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      censorType = btn.dataset.censor;
+      censorStrengthGroup.style.display = censorType === 'blackbox' ? 'none' : 'flex';
+    });
+  });
+
+  // Drag to select
+  function getCensorPos(e) {
+    const r = censorCanvasWrap.getBoundingClientRect();
+    const c = e.touches ? e.touches[0] : e;
+    return {
+      x: Math.max(0, Math.min(c.clientX - r.left, censorCanvas.width)),
+      y: Math.max(0, Math.min(c.clientY - r.top,  censorCanvas.height))
+    };
+  }
+
+  censorCanvasWrap.addEventListener('mousedown', startCensorDrag);
+  censorCanvasWrap.addEventListener('touchstart', startCensorDrag, { passive: false });
+
+  function startCensorDrag(e) {
+    e.preventDefault();
+    censorDragStart   = getCensorPos(e);
+    censorDragCurrent = { ...censorDragStart };
+    censorDragging    = true;
+    window.addEventListener('mousemove', onCensorDrag);
+    window.addEventListener('mouseup',   endCensorDrag);
+    window.addEventListener('touchmove', onCensorDrag,  { passive: false });
+    window.addEventListener('touchend',  endCensorDrag);
+  }
+
+  function onCensorDrag(e) {
+    e.preventDefault();
+    censorDragCurrent = getCensorPos(e);
+    redrawCensorCanvas();
+  }
+
+  function endCensorDrag(e) {
+    window.removeEventListener('mousemove', onCensorDrag);
+    window.removeEventListener('mouseup',   endCensorDrag);
+    window.removeEventListener('touchmove', onCensorDrag);
+    window.removeEventListener('touchend',  endCensorDrag);
+
+    if (censorDragStart && censorDragCurrent) {
+      const x = Math.min(censorDragStart.x, censorDragCurrent.x);
+      const y = Math.min(censorDragStart.y, censorDragCurrent.y);
+      const w = Math.abs(censorDragCurrent.x - censorDragStart.x);
+      const h = Math.abs(censorDragCurrent.y - censorDragStart.y);
+      if (w > 4 && h > 4) {
+        censorRegions.push({
+          x: Math.round(x / censorScale),
+          y: Math.round(y / censorScale),
+          w: Math.round(w / censorScale),
+          h: Math.round(h / censorScale),
+          type: censorType,
+          strength: censorStrength
+        });
+      }
+    }
+    censorDragging    = false;
+    censorDragStart   = null;
+    censorDragCurrent = null;
+    redrawCensorCanvas();
+    censorInfo.textContent = censorRegions.length
+      ? `${censorRegions.length} region${censorRegions.length > 1 ? 's' : ''} — drag to add more`
+      : 'drag to select region';
+  }
+
+  document.getElementById('censorUndoBtn').addEventListener('click', () => {
+    censorRegions.pop();
+    redrawCensorCanvas();
+    censorInfo.textContent = censorRegions.length
+      ? `${censorRegions.length} region${censorRegions.length > 1 ? 's' : ''} — drag to add more`
+      : 'drag to select region';
+  });
+
+  document.getElementById('censorClearBtn').addEventListener('click', () => {
+    censorRegions = [];
+    redrawCensorCanvas();
+    censorInfo.textContent = 'drag to select region';
+  });
+
+  document.getElementById('censorApplyBtn').addEventListener('click', () => {
+    if (censorIdx === null) return;
+    sourceFiles[censorIdx].censors = [...censorRegions];
+
+    const idxToRender = censorIdx;
+    closeCensorModal();
+    buildPreviewUrl(idxToRender, url => {
+      sourceFiles[idxToRender].previewUrl = url;
+      renderSourceCard(idxToRender);
+    });
+  });
+
+  document.getElementById('censorModalClose').addEventListener('click', closeCensorModal);
+  let censorOverlayMousedown = false;
+  censorModal.addEventListener('mousedown', e => { censorOverlayMousedown = e.target === censorModal; });
+  censorModal.addEventListener('mouseup',   e => { if (censorOverlayMousedown && e.target === censorModal) closeCensorModal(); censorOverlayMousedown = false; });
+
+  function closeCensorModal() {
+    censorModal.style.display = 'none';
+    censorIdx = null;
+    censorCanvas._baseImg = null;
+  }
+
+  // ── Lightbox ──────────────────────────────────────────────────────────────
+  const lightbox     = document.getElementById('lightbox');
+  const lightboxImg  = document.getElementById('lightboxImg');
+  const lightboxName = document.getElementById('lightboxName');
+
+  function openLightbox(url, name) {
+    lightboxImg.src = url;
+    lightboxName.textContent = name;
+    lightbox.classList.add('open');
+  }
+
+  lightbox.addEventListener('click', () => lightbox.classList.remove('open'));
+
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') lightbox.classList.remove('open');
+  });
+  </script>
+</body>
+</html>
