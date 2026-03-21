@@ -455,7 +455,7 @@
     }
 
     .modal-footer-crop   { background: var(--orange); }
-    .modal-footer-censor { background: var(--purple); }
+    .modal-footer-censor { background: var(--green); }
 
     .modal-footer .opt-label { color: var(--text-on-color); }
 
