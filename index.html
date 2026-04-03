@@ -3,16 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PXLPAL</title>
-  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-  <link rel="manifest" href="/site.webmanifest">
+  <title>PXLPAL — Free Image Converter, Compressor &amp; Editor</title>
+  <meta name="description" content="Free client-side image toolkit. Convert JPG, PNG, WebP, HEIC. Crop, censor, resize, rotate and adjust images — all in your browser, no upload needed. Private by design." />
+  <meta name="keywords" content="image converter, compress images online, resize images free, crop images online, HEIC to JPG, JPG to WebP, free image editor, no upload image tool, client-side image processing, squoosh alternative, tinypng alternative" />
+
+  <link rel="canonical" href="https://pxlpal.io" />
+
+  <meta property="og:title" content="PXLPAL — Free Image Toolkit" />
+  <meta property="og:description" content="Convert, compress, resize, crop and edit images in your browser. No uploads, no accounts, completely free and private." />
+  <meta property="og:url" content="https://pxlpal.io" />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://pxlpal.io/og-image.png" />
+  <meta property="og:site_name" content="PXLPAL" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="PXLPAL — Free Image Toolkit" />
+  <meta name="twitter:description" content="Convert, compress, resize, crop and edit images in your browser. No uploads, no accounts, completely free." />
+  <meta name="twitter:image" content="https://pxlpal.io/og-image.png" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "PXLPAL",
+    "url": "https://pxlpal.io",
+    "description": "Free client-side image converter, compressor and editor. Convert, resize, crop and adjust images entirely in your browser with no uploads.",
+    "applicationCategory": "UtilitiesApplication",
+    "operatingSystem": "Any",
+    "browserRequirements": "Requires JavaScript",
+    "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+    "featureList": "Convert JPG PNG WebP HEIC, Compress images, Resize images, Crop images, Censor regions, Rotate and flip, Brightness contrast saturation, Sharpen, Grayscale, Strip EXIF metadata"
+  }
+  </script>
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script defer src="https://cloud.umami.is/script.js" data-website-id="ac2c421b-e695-401f-b3af-369a4990b109"></script>
-  
 </head>
 <body>
 
@@ -23,172 +49,266 @@
   </header>
 
   <div class="page-body">
-  <div class="drop-zone" id="dropZone">
-    <input type="file" id="fileInput" accept="image/*,.heic,.HEIC" multiple />
-    <span class="drop-icon">⬇</span>
-    <p><strong>Click to browse</strong> or drag &amp; drop images here</p>
-    <p>JPG · PNG · WebP · HEIC · GIF · BMP · Multiple files</p>
-  </div>
 
-  <div class="error-msg" id="errorMsg"></div>
-
-  <div class="options-bar" id="optionsBar" style="display:none;">
-    <div class="opt-group">
-      <span class="opt-label">Output</span>
-      <div class="pill-group" id="formatGroup">
-        <button class="pill active" data-fmt="image/jpeg">JPG</button>
-        <button class="pill" data-fmt="image/png">PNG</button>
-        <button class="pill" data-fmt="image/webp">WebP</button>
-      </div>
+    <div class="drop-zone" id="dropZone">
+      <input type="file" id="fileInput" accept="image/*,.heic,.HEIC" multiple />
+      <span class="drop-icon">⬇</span>
+      <p><strong>Click to browse</strong> or drag &amp; drop images here</p>
+      <p>JPG · PNG · WebP · HEIC · GIF · BMP · Multiple files</p>
     </div>
 
-    <div class="divider"></div>
+    <div class="error-msg" id="errorMsg"></div>
 
-    <div class="opt-group" id="qualityGroup">
-      <span class="opt-label">Quality</span>
-      <div class="slider-wrap">
-        <input type="range" id="qualitySlider" min="10" max="100" value="82" step="1" />
-        <span class="slider-val" id="qualityDisplay">82%</span>
+    <div class="workspace" id="workspace" style="display:none;">
+      <div class="col-header">
+        <span class="col-title">Originals <span class="panel-count" id="leftCount">0</span></span>
+        <button class="bulk-btn" id="clearBtn">Clear all</button>
       </div>
-    </div>
-
-    <div class="divider"></div>
-
-    <div class="dims-group">
-      <div class="opt-group">
-        <span class="opt-label">Max W</span>
-        <input type="number" class="number-input" id="maxWidth" placeholder="px" min="10" max="8000" />
-      </div>
-      <div class="opt-group">
-        <span class="opt-label">Max H</span>
-        <input type="number" class="number-input" id="maxHeight" placeholder="px" min="10" max="8000" />
-      </div>
-    </div>
-
-    <div style="margin-left:auto;">
-      <button class="process-btn" id="processBtn">Process</button>
-    </div>
-  </div>
-
-  <div class="workspace" id="workspace" style="display:none;">
-    
-    <div class="panel panel-left">
-      <div class="panel-header">
-        <div class="panel-title"><span class="dot"></span>Originals</div>
-        <span class="panel-count" id="leftCount">0</span>
-      </div>
-      <div class="panel-grid" id="panelLeft"></div>
-    </div>
-    
-    <div class="panel panel-right">
-      <div class="panel-header">
-        <div class="panel-title"><span class="dot"></span>Processed</div>
-        <div style="display:flex;gap:6px;align-items:center;">
-          <span class="panel-count" id="rightCount">0</span>
+      <div class="col-header">
+        <span class="col-title">Processed <span class="panel-count" id="rightCount">0</span></span>
+        <div style="display:flex;gap:8px;align-items:center;">
+          <button class="process-btn" id="processBtn">PROCESS ALL</button>
           <button class="bulk-btn primary" id="downloadAllBtn" style="display:none;">ZIP all</button>
         </div>
       </div>
-      <div class="panel-grid" id="panelRight">
-        <div class="panel-empty" id="rightEmpty">
-          <span class="panel-empty-icon">→</span>
-          <span>Processed images<br>will appear here</span>
+      <div class="card-stream" id="panelLeft"></div>
+      <div class="card-stream" id="panelRight">
+        <div class="stream-empty" id="rightEmpty">
+          <span>→</span>
+          <span>Processed images will appear here</span>
         </div>
       </div>
     </div>
+
+    <div class="hint" id="hint">
+      <p>Your files never leave your device.</p>
+      <p>All processing happens locally in your browser.</p>
+    </div>
+
+    <div class="seo-about">
+      <p>PXLPAL is a free, client-side image toolkit. Convert images between <strong>JPG, PNG, WebP and HEIC</strong> formats, compress them to reduce file size, resize to exact dimensions, crop, censor sensitive regions, rotate, flip, and adjust brightness, contrast, saturation and sharpness — all without uploading your files anywhere. Works entirely in your browser. No account, no server, no cost.</p>
+    </div>
+
+    <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=YOUR_ZONE_ID&placement=pxlpal" id="_carbonads_js"></script>
+
   </div>
 
-  <div class="bulk-bar" id="bulkBar" style="display:none;">
-    <button class="bulk-btn" id="clearBtn">Clear all</button>
-  </div>
+  <div class="modal-overlay" id="editModal" style="display:none;">
+    <div class="edit-modal">
 
-  <div class="hint" id="hint">
-    <p>Your files never leave your device.</p>
-    <p>All processing happens locally in your browser.</p>
-  </div>
-
-  
-  <div class="modal-overlay" id="cropModal" data-modal="crop" style="display:none;">
-    <div class="modal">
-      <div class="modal-header">
-        <span class="modal-title">Crop Image</span>
-        <button class="modal-close" id="modalClose">✕</button>
+      <div class="edit-header">
+        <span class="modal-title" id="editModalTitle">Edit Image</span>
+        <button class="modal-close" id="editModalClose">✕</button>
       </div>
-      <div class="crop-area">
-        <div class="crop-canvas-wrap" id="canvasWrap">
-          <canvas id="cropCanvas"></canvas>
-          <div id="cropBox">
-            <div class="crop-handle handle-nw" data-handle="nw"></div>
-            <div class="crop-handle handle-ne" data-handle="ne"></div>
-            <div class="crop-handle handle-sw" data-handle="sw"></div>
-            <div class="crop-handle handle-se" data-handle="se"></div>
-            <div class="crop-handle handle-n"  data-handle="n"></div>
-            <div class="crop-handle handle-s"  data-handle="s"></div>
-            <div class="crop-handle handle-w"  data-handle="w"></div>
-            <div class="crop-handle handle-e"  data-handle="e"></div>
+
+      <div class="edit-body">
+
+        <!-- Sidebar: accordion tools + pinned actions -->
+        <div class="edit-sidebar">
+
+          <!-- TRANSFORM -->
+          <div class="tool-section" id="section-transform">
+            <button class="tool-btn active" data-tool="transform">
+              <span class="tool-icon">[ ]</span>
+              <span class="tool-label">Transform</span>
+            </button>
+            <div class="tool-controls open" id="controls-transform">
+              <div class="ctrl-group">
+                <span class="ctrl-label">Crop aspect</span>
+                <div class="aspect-btns">
+                  <button class="aspect-btn active" data-aspect="free">Free</button>
+                  <button class="aspect-btn" data-aspect="1:1">1:1</button>
+                  <button class="aspect-btn" data-aspect="4:3">4:3</button>
+                  <button class="aspect-btn" data-aspect="16:9">16:9</button>
+                  <button class="aspect-btn" data-aspect="3:2">3:2</button>
+                  <button class="aspect-btn" id="rotateAspectBtn" style="display:none;">⇄</button>
+                </div>
+                <div class="ctrl-row">
+                  <button class="ctrl-btn" id="resetCropBtn">Reset crop</button>
+                  <button class="ctrl-btn accent" id="applyCropBtn">Apply crop</button>
+                </div>
+              </div>
+              <div class="ctrl-divider"></div>
+              <div class="ctrl-group">
+                <span class="ctrl-label">Rotate &amp; Flip</span>
+                <div class="ctrl-row">
+                  <button class="ctrl-btn" id="rotateLeft">↺ 90° L</button>
+                  <button class="ctrl-btn" id="rotateRight">↻ 90° R</button>
+                  <button class="ctrl-btn" id="flipH">↔ H</button>
+                  <button class="ctrl-btn" id="flipV">↕ V</button>
+                </div>
+              </div>
+              <div class="ctrl-divider"></div>
+              <div class="ctrl-group">
+                <span class="ctrl-label">Resize</span>
+                <div class="ctrl-row">
+                  <div class="ctrl-field">
+                    <span class="ctrl-sublabel">W</span>
+                    <input type="number" class="number-input-sm" id="exportW" placeholder="px" min="1" max="8000" />
+                  </div>
+                  <div class="ctrl-field">
+                    <span class="ctrl-sublabel">H</span>
+                    <input type="number" class="number-input-sm" id="exportH" placeholder="px" min="1" max="8000" />
+                  </div>
+                </div>
+                <label class="toggle-wrap">
+                  <input type="checkbox" id="exportLockAspect" checked />
+                  <span class="toggle-label">Lock aspect</span>
+                </label>
+              </div>
+            </div>
           </div>
-          <div class="crop-info" id="cropInfo">drag to select area</div>
-        </div>
-      </div>
-      <div class="modal-footer modal-footer-crop">
-        <span class="opt-label">Aspect</span>
-        <div class="aspect-btns" id="aspectBtns">
-          <button class="aspect-btn active" data-aspect="free">Free</button>
-          <button class="aspect-btn" data-aspect="1:1">1:1</button>
-          <button class="aspect-btn" data-aspect="4:3">4:3</button>
-          <button class="aspect-btn" data-aspect="16:9">16:9</button>
-          <button class="aspect-btn" data-aspect="3:2">3:2</button>
-        </div>
-        <button class="aspect-btn" id="rotateAspectBtn" title="Rotate aspect ratio" style="display:none;">⇄</button>
-        <div class="modal-actions">
-          <button class="btn-secondary" id="resetCropBtn">Reset</button>
-          <button class="btn-primary" id="applyCropBtn">Apply Crop</button>
-        </div>
-      </div>
-    </div>
-  </div>
 
-  
-  <script async type="text/javascript" src="//cdn.carbonads.com/carbon.js?serve=YOUR_ZONE_ID&placement=pxlpal" id="_carbonads_js"></script>
+          <!-- APPEARANCE -->
+          <div class="tool-section" id="section-appearance">
+            <button class="tool-btn" data-tool="appearance">
+              <span class="tool-icon">◑</span>
+              <span class="tool-label">Appearance</span>
+            </button>
+            <div class="tool-controls" id="controls-appearance">
+              <div class="ctrl-group">
+                <div class="ctrl-slider-row">
+                  <span class="ctrl-sublabel">Brightness</span>
+                  <input type="range" id="brightnessSlider" min="-100" max="100" value="0" step="1" />
+                  <span class="slider-val" id="brightnessVal">0</span>
+                </div>
+                <div class="ctrl-slider-row">
+                  <span class="ctrl-sublabel">Contrast</span>
+                  <input type="range" id="contrastSlider" min="-100" max="100" value="0" step="1" />
+                  <span class="slider-val" id="contrastVal">0</span>
+                </div>
+                <div class="ctrl-slider-row">
+                  <span class="ctrl-sublabel">Saturation</span>
+                  <input type="range" id="saturationSlider" min="-100" max="100" value="0" step="1" />
+                  <span class="slider-val" id="saturationVal">0</span>
+                </div>
+                <div class="ctrl-slider-row">
+                  <span class="ctrl-sublabel">Sharpen</span>
+                  <input type="range" id="sharpenSlider" min="0" max="10" value="0" step="1" />
+                  <span class="slider-val" id="sharpenVal">0</span>
+                </div>
+              </div>
+              <div class="ctrl-divider"></div>
+              <div class="ctrl-group">
+                <span class="ctrl-label">Filters</span>
+                <label class="toggle-wrap">
+                  <input type="checkbox" id="grayscaleToggle" />
+                  <span class="toggle-label">Grayscale</span>
+                </label>
+              </div>
+            </div>
+          </div>
 
-  </div>
+          <!-- PRIVACY -->
+          <div class="tool-section" id="section-privacy">
+            <button class="tool-btn" data-tool="privacy">
+              <span class="tool-icon">◼</span>
+              <span class="tool-label">Privacy</span>
+            </button>
+            <div class="tool-controls" id="controls-privacy">
+              <div class="ctrl-group">
+                <span class="ctrl-label">Censor</span>
+                <div class="pill-group" id="censorTypeGroup">
+                  <button class="pill active" data-censor="pixelate">Pixelate</button>
+                  <button class="pill" data-censor="blur">Blur</button>
+                  <button class="pill" data-censor="blackbox">Black</button>
+                </div>
+                <div class="ctrl-slider-row" id="censorStrengthGroup">
+                  <span class="ctrl-sublabel">Strength</span>
+                  <input type="range" id="censorStrengthSlider" min="0" max="10" value="5" step="1" />
+                  <span class="slider-val" id="censorStrengthVal">5</span>
+                </div>
+                <div class="ctrl-row">
+                  <button class="ctrl-btn" id="censorUndoBtn">↩ Undo</button>
+                  <button class="ctrl-btn" id="censorClearBtn">Clear</button>
+                </div>
+              </div>
+              <div class="ctrl-divider"></div>
+              <div class="ctrl-group">
+                <span class="ctrl-label">Metadata</span>
+                <label class="toggle-wrap">
+                  <input type="checkbox" id="stripExif" checked />
+                  <span class="toggle-label" id="stripExifLabel">Remove EXIF on export</span>
+                </label>
+                <span class="ctrl-sublabel" style="opacity:0.5; line-height:1.5;">Strips GPS, camera model,<br>timestamps from the file</span>
+              </div>
+            </div>
+          </div>
 
-  
-  <div class="modal-overlay" id="censorModal" data-modal="censor" style="display:none;">
-    <div class="modal">
-      <div class="modal-header">
-        <span class="modal-title">Censor Regions</span>
-        <button class="modal-close" id="censorModalClose">✕</button>
-      </div>
-      <div class="crop-area">
-        <div class="crop-canvas-wrap" id="censorCanvasWrap">
-          <canvas id="censorCanvas"></canvas>
-          <div class="crop-info" id="censorInfo">drag to select region</div>
+          <!-- EXPORT -->
+          <div class="tool-section" id="section-export">
+            <button class="tool-btn" data-tool="export">
+              <span class="tool-icon">↓</span>
+              <span class="tool-label">Export</span>
+            </button>
+            <div class="tool-controls" id="controls-export">
+              <div class="ctrl-group">
+                <span class="ctrl-label">Format</span>
+                <div class="pill-group" id="exportFormatGroup">
+                  <button class="pill active" data-fmt="image/jpeg">JPG</button>
+                  <button class="pill" data-fmt="image/png">PNG</button>
+                  <button class="pill" data-fmt="image/webp">WebP</button>
+                </div>
+              </div>
+              <div class="ctrl-group" id="exportQualityGroup">
+                <div class="ctrl-slider-row">
+                  <span class="ctrl-sublabel">Quality</span>
+                  <input type="range" id="exportQualitySlider" min="10" max="100" value="82" step="1" />
+                  <span class="slider-val" id="exportQualityVal">82%</span>
+                </div>
+              </div>
+              <div class="ctrl-group">
+                <span class="ctrl-label">Max size cap</span>
+                <div class="ctrl-row">
+                  <div class="ctrl-field">
+                    <span class="ctrl-sublabel">Max W</span>
+                    <input type="number" class="number-input-sm" id="exportMaxW" placeholder="px" min="1" max="8000" />
+                  </div>
+                  <div class="ctrl-field">
+                    <span class="ctrl-sublabel">Max H</span>
+                    <input type="number" class="number-input-sm" id="exportMaxH" placeholder="px" min="1" max="8000" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Undo / Redo -->
+          <div class="sidebar-history">
+            <button class="ctrl-btn" id="undoBtn" disabled>↩ Undo</button>
+            <button class="ctrl-btn" id="redoBtn" disabled>↪ Redo</button>
+          </div>
+
+          <!-- Pinned actions -->
+          <div class="sidebar-actions">
+            <button class="ctrl-btn" id="editCancelBtn">Cancel</button>
+            <button class="ctrl-btn accent" id="editApplyBtn">Apply</button>
+          </div>
+
         </div>
-      </div>
-      <div class="modal-footer modal-footer-censor">
-        <span class="opt-label">Type</span>
-        <div class="pill-group" id="censorTypeGroup">
-          <button class="pill active" data-censor="pixelate">Pixelate</button>
-          <button class="pill" data-censor="blur">Blur</button>
-          <button class="pill" data-censor="blackbox">Black Box</button>
-        </div>
-        <div class="opt-group" id="censorStrengthGroup">
-          <span class="opt-label">Strength</span>
-          <div class="slider-wrap">
-            <input type="range" id="censorStrengthSlider" min="0" max="10" value="5" step="1" />
-            <span class="slider-val" id="censorStrengthVal">5</span>
+
+        <!-- Canvas -->
+        <div class="edit-canvas-area">
+          <div class="crop-canvas-wrap" id="canvasWrap">
+            <canvas id="editCanvas"></canvas>
+            <div id="cropBox">
+              <div class="crop-handle handle-nw" data-handle="nw"></div>
+              <div class="crop-handle handle-ne" data-handle="ne"></div>
+              <div class="crop-handle handle-sw" data-handle="sw"></div>
+              <div class="crop-handle handle-se" data-handle="se"></div>
+              <div class="crop-handle handle-n"  data-handle="n"></div>
+              <div class="crop-handle handle-s"  data-handle="s"></div>
+              <div class="crop-handle handle-w"  data-handle="w"></div>
+              <div class="crop-handle handle-e"  data-handle="e"></div>
+            </div>
+            <div class="crop-info" id="editInfo"></div>
           </div>
         </div>
-        <div class="modal-actions">
-          <button class="btn-secondary" id="censorUndoBtn">↩ Undo</button>
-          <button class="btn-secondary" id="censorClearBtn">Clear all</button>
-          <button class="btn-primary" id="censorApplyBtn">Apply</button>
-        </div>
+
       </div>
     </div>
   </div>
 
-  
   <div class="lightbox" id="lightbox">
     <img class="lightbox-img" id="lightboxImg" src="" alt="" />
     <div class="lightbox-name" id="lightboxName"></div>
