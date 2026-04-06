@@ -555,10 +555,13 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
     const img = new Image();
     img.onload = () => {
       // Modal is 95vw x 95vh.
-      // W: subtract sidebar (230px) + canvas padding (32px)
-      // H: subtract header (~46px) + canvas padding (32px)
-      const maxW = Math.round(window.innerWidth  * 0.95) - 230 - 48;
-      const maxH = Math.round(window.innerHeight * 0.95) - 46 - 48;
+      const isMobile = window.innerWidth <= 768;
+      const maxW = isMobile
+        ? window.innerWidth - 20
+        : Math.round(window.innerWidth  * 0.95) - 230 - 48;
+      const maxH = isMobile
+        ? window.innerHeight - 52 - Math.round(window.innerHeight * 0.40) - 112
+        : Math.round(window.innerHeight * 0.95) - 46 - 48;
       const s1 = Math.min(maxW / img.naturalWidth,  maxH / img.naturalHeight,  1);
       const s2 = Math.min(maxW / img.naturalHeight, maxH / img.naturalWidth,   1);
       editScale = Math.min(s1, s2);
@@ -932,8 +935,13 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
     // Reload canvas from cropped image
     const newImg = new Image();
     newImg.onload = () => {
-      const maxW = Math.round(window.innerWidth  * 0.95) - 230 - 48;
-      const maxH = Math.round(window.innerHeight * 0.95) - 46 - 48;
+      const isMobile2 = window.innerWidth <= 768;
+      const maxW = isMobile2
+        ? window.innerWidth - 20
+        : Math.round(window.innerWidth  * 0.95) - 230 - 48;
+      const maxH = isMobile2
+        ? window.innerHeight - 52 - Math.round(window.innerHeight * 0.40) - 112
+        : Math.round(window.innerHeight * 0.95) - 46 - 48;
       const s1 = Math.min(maxW / newImg.naturalWidth,  maxH / newImg.naturalHeight,  1);
       const s2 = Math.min(maxW / newImg.naturalHeight, maxH / newImg.naturalWidth,   1);
       editScale = Math.min(s1, s2);
