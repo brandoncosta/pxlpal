@@ -1,4 +1,5 @@
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+* { -webkit-tap-highlight-color: transparent; }
 
 :root {
   --bg:      #2a2a2e;
@@ -580,15 +581,15 @@ input[type="range"]::-webkit-slider-thumb {
 /* Card thumbnail height cap — handled above */
 
 /* ── Mobile ── */
-@media (max-width: 680px) {
-  .workspace { grid-template-columns: 1fr; }
+@media (max-width: 768px) {
+  /* ── General ── */
   header { width: calc(100% - 24px); padding: 28px 20px 24px; }
   .page-body { width: calc(100% - 24px); }
-  .drop-zone { padding: 36px 24px; }
+  .drop-zone { padding: 36px 20px; }
+  .workspace { grid-template-columns: 1fr; }
   .card-stream { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
-}
 
-@media (max-width: 768px) {
+  /* ── Crop handles ── */
   .crop-handle { width: 22px; height: 22px; }
   .handle-nw { top:-12px; left:-12px; }
   .handle-ne { top:-12px; right:-12px; }
@@ -598,8 +599,87 @@ input[type="range"]::-webkit-slider-thumb {
   .handle-s  { bottom:-12px; left:50%; transform:translateX(-50%); }
   .handle-w  { left:-12px; top:50%; transform:translateY(-50%); }
   .handle-e  { right:-12px; top:50%; transform:translateY(-50%); }
-  .edit-canvas-area { justify-content: flex-end; padding-left: 44px; padding-right: 10px; }
-  -webkit-tap-highlight-color: transparent;
+
+  /* ── Edit modal — full screen on mobile ── */
+  .edit-modal {
+    width: 100vw; height: 100vh;
+    border-radius: 0;
+    display: flex; flex-direction: column;
+  }
+
+  .edit-body {
+    flex-direction: column;
+    flex: 1; overflow: hidden; min-height: 0;
+  }
+
+  /* Sidebar becomes horizontal tab bar */
+  .edit-sidebar {
+    width: 100%;
+    flex-direction: row;
+    height: auto;
+    overflow-x: auto;
+    overflow-y: hidden;
+    border-right: none;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    padding: 4px 8px;
+    gap: 2px;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .tool-btn {
+    flex-direction: column;
+    padding: 8px 12px;
+    flex-shrink: 0;
+    gap: 3px;
+    border-radius: var(--r);
+    border-bottom: none;
+  }
+
+  .tool-label { font-size: 8px; }
+
+  /* Canvas area takes remaining space */
+  .edit-canvas-area {
+    flex: 1; min-height: 0;
+    padding: 10px;
+  }
+
+  /* Controls panel slides up from below canvas */
+  .tool-controls {
+    position: fixed;
+    bottom: 60px; /* above Cancel/Apply */
+    left: 0; right: 0;
+    max-height: 40vh;
+    overflow-y: auto;
+    background: #111118;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    padding: 12px 16px;
+    z-index: 10;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Sidebar actions pinned to bottom */
+  .sidebar-actions {
+    position: fixed;
+    bottom: 0; left: 0; right: 0;
+    z-index: 11;
+    padding: 10px 16px;
+    background: #1a1a1e;
+    border-top: 1px solid rgba(255,255,255,0.06);
+  }
+
+  .sidebar-history {
+    position: fixed;
+    bottom: 52px; left: 0; right: 0;
+    z-index: 11;
+    padding: 6px 16px 0;
+    background: #1a1a1e;
+  }
+
+  /* When controls open, push canvas up */
+  .tool-controls.open ~ .edit-canvas-area,
+  .edit-body:has(.tool-controls.open) .edit-canvas-area {
+    padding-bottom: 45vh;
+  }
 }
 
 
@@ -613,3 +693,12 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .seo-about strong { color: #888; }
+
+@media (max-width: 480px) {
+  .col-header { flex-wrap: wrap; gap: 8px; }
+  .col-title { font-size: 12px; }
+  .process-btn { font-size: 11px; padding: 7px 14px; }
+  .bulk-btn { font-size: 10px; padding: 7px 12px; }
+  .img-card-name { font-size: 10px; }
+  .img-card-meta { font-size: 9px; }
+}
