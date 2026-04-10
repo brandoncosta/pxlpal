@@ -430,24 +430,18 @@ h1 {
 .ctrl-btn.accent { background: var(--text-on-color); color: var(--text-ui); }
 .ctrl-btn.accent:hover { filter: brightness(1.15); }
 
-.sidebar-history {
-  display: flex; gap: 8px;
-  padding: 10px 14px 0;
-}
-
-.sidebar-history .ctrl-btn { flex: 1; text-align: center; }
-.sidebar-history .ctrl-btn:disabled { opacity: 0.25; cursor: default; }
-
-.sidebar-actions {
+.mobile-bottom-bar {
   margin-top: auto;
-  display: flex; gap: 8px;
+  display: flex; gap: 6px; flex-wrap: wrap;
   padding: 10px 14px 12px;
   border-top: 1px solid rgba(255,255,255,0.06);
   background: #1a1a1e;
   flex-shrink: 0;
 }
 
-.sidebar-actions .ctrl-btn { flex: 1; text-align: center; }
+.mobile-bottom-bar .ctrl-btn { flex: 1; text-align: center; }
+.mobile-bottom-bar .ctrl-btn:disabled { opacity: 0.25; cursor: default; }
+.mobile-bottom-bar .ctrl-btn.accent { flex: 2; }
 
 .edit-canvas-area {
   flex: 1; overflow: hidden;
@@ -584,116 +578,180 @@ input[type="range"]::-webkit-slider-thumb {
 
 /* Card thumbnail height cap — handled above */
 
-/* ── Mobile ── */
+/* ────────────────────────────────────────────
+   MOBILE  ≤ 768px
+   Layout: full-screen modal, image fills screen,
+   toolbar at bottom, sheet slides up for controls
+──────────────────────────────────────────── */
 @media (max-width: 768px) {
-  /* ── General ── */
+
+  /* ── Page ── */
   header { width: calc(100% - 24px); padding: 28px 20px 24px; }
   .page-body { width: calc(100% - 24px); }
   .drop-zone { padding: 36px 20px; }
   .workspace { grid-template-columns: 1fr; }
   .card-stream { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
 
-  /* ── Crop handles ── */
-  .crop-handle { width: 22px; height: 22px; }
-  .handle-nw { top:-12px; left:-12px; }
-  .handle-ne { top:-12px; right:-12px; }
-  .handle-sw { bottom:-12px; left:-12px; }
-  .handle-se { bottom:-12px; right:-12px; }
-  .handle-n  { top:-12px; left:50%; transform:translateX(-50%); }
-  .handle-s  { bottom:-12px; left:50%; transform:translateX(-50%); }
-  .handle-w  { left:-12px; top:50%; transform:translateY(-50%); }
-  .handle-e  { right:-12px; top:50%; transform:translateY(-50%); }
+  /* ── Crop handles — bigger for touch ── */
+  .crop-handle { width: 24px; height: 24px; border-width: 2px; }
+  .handle-nw { top:-13px; left:-13px; }
+  .handle-ne { top:-13px; right:-13px; }
+  .handle-sw { bottom:-13px; left:-13px; }
+  .handle-se { bottom:-13px; right:-13px; }
+  .handle-n  { top:-13px; left:50%; transform:translateX(-50%); }
+  .handle-s  { bottom:-13px; left:50%; transform:translateX(-50%); }
+  .handle-w  { left:-13px; top:50%; transform:translateY(-50%); }
+  .handle-e  { right:-13px; top:50%; transform:translateY(-50%); }
 
-  /* ── Edit modal — full screen, flex column ── */
-  .modal-overlay { padding: 0; align-items: stretch; }
+  /* ── Modal overlay — no padding ── */
+  .modal-overlay { padding: 0; }
 
+  /* ── Edit modal — true full screen ── */
   .edit-modal {
-    width: 100%; border-radius: 0;
-    height: 100vh;
-    height: 100dvh; /* Safari safe area */
-    display: flex; flex-direction: column;
+    width: 100%;
+    height: 100dvh;
+    border-radius: 0;
+    display: grid;
+    /* header / canvas / toolbar */
+    grid-template-rows: auto 1fr auto;
+    grid-template-columns: 1fr;
+    overflow: hidden;
   }
 
-  /* edit-body is canvas + sidebar stacked vertically, canvas on top */
+  /* Header stays at top */
+  .edit-header { grid-row: 1; }
+
+  /* edit-body = canvas only, fills middle */
   .edit-body {
-    flex-direction: column-reverse; /* sidebar below canvas */
-    flex: 1;
+    grid-row: 2;
+    display: block;
     overflow: hidden;
+    position: relative;
     min-height: 0;
   }
 
-  /* Canvas gets all remaining space */
+  /* Canvas fills the body */
   .edit-canvas-area {
-    flex: 1; min-height: 0;
+    width: 100%; height: 100%;
     padding: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     overflow: hidden;
   }
 
-  /* Sidebar becomes a bottom drawer — tab bar + open controls */
+  /* Sidebar becomes the bottom toolbar + sheet — grid-row 3 */
   .edit-sidebar {
+    grid-row: 3;
     width: 100%;
-    flex-direction: column;
     height: auto;
-    max-height: 50vh;
     border-right: none;
-    border-top: 1px solid rgba(255,255,255,0.06);
+    border-top: 1px solid rgba(255,255,255,0.08);
+    background: #1a1a1e;
+    display: flex;
+    flex-direction: column;
     overflow: hidden;
     flex-shrink: 0;
   }
 
-  /* Tab row — horizontal scroll */
-  .tool-section { flex-direction: row; flex-shrink: 0; }
-
-  /* Hide all tool-sections by default, show as horizontal bar of buttons */
-  .edit-sidebar > .tool-section { display: contents; }
-
-  /* Tab buttons in a horizontal row */
-  .tool-btn {
-    flex-direction: column;
-    padding: 8px 14px;
-    flex-shrink: 0;
-    gap: 3px;
-    border-bottom: none;
-    border-right: 1px solid rgba(255,255,255,0.04);
-  }
-
-  .tool-label { font-size: 8px; }
-
-  /* Tab bar container */
+  /* Tab toolbar — always visible row of icons */
   .mobile-tab-bar {
     display: flex;
     flex-direction: row;
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-    border-bottom: 1px solid rgba(255,255,255,0.06);
     flex-shrink: 0;
-    background: #1a1a1e;
+    scrollbar-width: none;
+  }
+  .mobile-tab-bar::-webkit-scrollbar { display: none; }
+
+  /* Tool buttons in the toolbar */
+  .tool-btn {
+    flex-direction: column;
+    flex-shrink: 0;
+    padding: 10px 16px;
+    gap: 4px;
+    border-bottom: none;
+    border-right: 1px solid rgba(255,255,255,0.04);
+    min-width: 60px;
+    justify-content: center;
+    align-items: center;
   }
 
-  /* Open controls panel — scrollable, capped height */
-  .tool-controls.open {
-    max-height: 30vh;
+  .tool-icon { font-size: 16px; }
+  .tool-label { font-size: 9px; }
+
+  /* Controls sheet — appears above toolbar when a tool is active */
+  .tool-controls {
+    display: none;
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px 14px;
+    background: #111118;
+    border-top: 1px solid rgba(255,255,255,0.06);
     overflow-y: auto;
+    max-height: 35vh;
     -webkit-overflow-scrolling: touch;
     flex-shrink: 0;
   }
 
-  /* Undo/redo + Cancel/Apply at the very bottom, inside the modal flow */
+  .tool-controls.open { display: flex; }
+
+  /* Controls lay out horizontally on mobile */
+  .tool-controls .ctrl-group { flex-direction: row; flex-wrap: wrap; align-items: center; gap: 8px; }
+  .tool-controls .ctrl-divider { display: none; }
+  .tool-controls .ctrl-label { width: 100%; margin-bottom: 0; }
+
+  /* Sliders full width */
+  .tool-controls .ctrl-slider-row { width: 100%; }
+  .tool-controls .ctrl-slider-row input[type="range"] { flex: 1; }
+
+  /* Undo/redo + Cancel/Apply in a single row at the bottom */
   .sidebar-history {
     position: static;
-    padding: 6px 12px 0;
-    background: #1a1a1e;
+    display: flex;
+    gap: 6px;
+    padding: 0;
+    background: transparent;
     flex-shrink: 0;
   }
+
+  .sidebar-history .ctrl-btn { flex: 1; }
 
   .sidebar-actions {
     position: static;
     margin-top: 0;
-    padding: 8px 12px 10px;
+    display: flex;
+    gap: 6px;
+    padding: 0;
+    background: transparent;
     flex-shrink: 0;
   }
+
+  .sidebar-actions .ctrl-btn { flex: 1; }
+
+  /* Bottom bar: undo/redo + cancel/apply in one row */
+  .mobile-bottom-bar {
+    display: flex;
+    gap: 6px;
+    padding: 8px 12px;
+    background: #1a1a1e;
+    border-top: 1px solid rgba(255,255,255,0.06);
+    flex-shrink: 0;
+  }
+
+  .mobile-bottom-bar .ctrl-btn { flex: 1; text-align: center; }
 }
 
+@media (max-width: 480px) {
+  .col-header { flex-wrap: wrap; gap: 8px; }
+  .col-title { font-size: 12px; }
+  .process-btn { font-size: 11px; padding: 7px 14px; }
+  .bulk-btn { font-size: 10px; padding: 7px 12px; }
+  .img-card-name { font-size: 10px; }
+  .img-card-meta { font-size: 9px; }
+}
 
 .seo-about {
   width: 100%;
@@ -705,12 +763,3 @@ input[type="range"]::-webkit-slider-thumb {
 }
 
 .seo-about strong { color: #888; }
-
-@media (max-width: 480px) {
-  .col-header { flex-wrap: wrap; gap: 8px; }
-  .col-title { font-size: 12px; }
-  .process-btn { font-size: 11px; padding: 7px 14px; }
-  .bulk-btn { font-size: 10px; padding: 7px 12px; }
-  .img-card-name { font-size: 10px; }
-  .img-card-meta { font-size: 9px; }
-}

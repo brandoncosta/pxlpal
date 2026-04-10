@@ -557,10 +557,10 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
       // Modal is 95vw x 95vh.
       const isMobile = window.innerWidth <= 768;
       const maxW = isMobile
-        ? window.innerWidth - 20
+        ? window.innerWidth - 16
         : Math.round(window.innerWidth  * 0.95) - 230 - 48;
       const maxH = isMobile
-        ? window.innerHeight - 52 - Math.round(window.innerHeight * 0.40) - 112
+        ? window.innerHeight - 46 - 52 - 44 - 16
         : Math.round(window.innerHeight * 0.95) - 46 - 48;
       const s1 = Math.min(maxW / img.naturalWidth,  maxH / img.naturalHeight,  1);
       const s2 = Math.min(maxW / img.naturalHeight, maxH / img.naturalWidth,   1);
@@ -937,10 +937,10 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
     newImg.onload = () => {
       const isMobile2 = window.innerWidth <= 768;
       const maxW = isMobile2
-        ? window.innerWidth - 20
+        ? window.innerWidth - 16
         : Math.round(window.innerWidth  * 0.95) - 230 - 48;
       const maxH = isMobile2
-        ? window.innerHeight - 52 - Math.round(window.innerHeight * 0.40) - 112
+        ? window.innerHeight - 46 - 52 - 44 - 16
         : Math.round(window.innerHeight * 0.95) - 46 - 48;
       const s1 = Math.min(maxW / newImg.naturalWidth,  maxH / newImg.naturalHeight,  1);
       const s2 = Math.min(maxW / newImg.naturalHeight, maxH / newImg.naturalWidth,   1);
