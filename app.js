@@ -830,10 +830,8 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
 
   document.querySelectorAll('.tool-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      // Toggle: clicking open section closes it, clicking closed section opens it
       const t = btn.dataset.tool;
       if (activeTool === t) {
-        // close — deactivate, collapse
         btn.classList.remove('active');
         const ctrl = document.getElementById('controls-' + t);
         if (ctrl) ctrl.classList.remove('open');
@@ -843,6 +841,8 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
         cropBox.style.display = 'none';
       } else {
         setActiveTool(t);
+        // Scroll tab into view on mobile
+        btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
       }
     });
   });
