@@ -75,8 +75,8 @@ function renderSourceCard(idx) {
   thumb.src = src.previewUrl || src.dataUrl || '';
   thumb.alt = src.file.name;
   thumb.style.cursor = 'pointer';
-  thumb.addEventListener('click', () => openEditModal(idx, 'transform'));
-  thumb.addEventListener('touchend', e => { e.preventDefault(); openEditModal(idx, 'transform'); });
+  thumb.addEventListener('click', () => openEditModal(idx, 'crop'));
+  thumb.addEventListener('touchend', e => { e.preventDefault(); openEditModal(idx, 'crop'); });
 
   const removeBtn = document.createElement('button');
   removeBtn.className = 'card-remove';
@@ -117,8 +117,8 @@ function renderSourceCard(idx) {
   const editBtn = document.createElement('button');
   editBtn.className = 'edit-badge' + (hasEdits ? ' active' : '');
   editBtn.textContent = hasEdits ? 'Edited' : 'Edit';
-  editBtn.addEventListener('click', () => openEditModal(idx, 'transform'));
-  editBtn.addEventListener('touchend', e => { e.preventDefault(); openEditModal(idx, 'transform'); });
+  editBtn.addEventListener('click', () => openEditModal(idx, 'crop'));
+  editBtn.addEventListener('touchend', e => { e.preventDefault(); openEditModal(idx, 'crop'); });
 
   actions.append(editBtn);
   info.append(nameEl, meta, actions);
@@ -401,7 +401,7 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
 
   let editIdx        = null;
   let editScale      = 1;
-  let activeTool     = 'transform';
+  let activeTool     = 'crop';
 
   // ── Edit history (undo/redo) ──
   let editHistory    = [];
@@ -540,6 +540,20 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
     document.getElementById('sharpenVal').textContent = pendingSharpen;
     document.getElementById('grayscaleToggle').checked = pendingGrayscale;
     document.getElementById('stripExif').checked = stripExif;
+
+    // Sync mobile mirror controls
+    document.querySelectorAll('.mobile-mirror').forEach(el => {
+      const target = document.getElementById(el.dataset.mirror);
+      if (!target) return;
+      if (el.type === 'range') el.value = target.value;
+      else if (el.type === 'checkbox') el.checked = target.checked;
+    });
+    // Sync mobile max W/H
+    const mw = sourceFiles[idx]; 
+    const mwEl = document.getElementById('exportMaxWM');
+    const mhEl = document.getElementById('exportMaxHM');
+    if (mwEl) mwEl.value = mw.exportMaxW || '';
+    if (mhEl) mhEl.value = mw.exportMaxH || '';
     document.getElementById('stripExifLabel').textContent = stripExif ? 'Remove EXIF on export' : 'Keep EXIF on export';
 
     document.getElementById('censorStrengthSlider').value = 5;
@@ -550,7 +564,7 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
     document.querySelector('#censorTypeGroup .pill[data-censor="pixelate"]').classList.add('active');
     document.getElementById('censorStrengthGroup').style.display = 'flex';
 
-    setActiveTool(startTool || 'transform');
+    setActiveTool(startTool || 'crop');
 
     const img = new Image();
     img.onload = () => {
@@ -616,11 +630,11 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
     if (tool === 'export' && editIdx !== null) loadExportPanel(sourceFiles[editIdx]);
 
     // Canvas cursor/mode
-    if (tool === 'transform') {
+    if (tool === 'crop') {
       editInfo.textContent = 'Drag to select crop area';
       canvasWrap.style.cursor = 'crosshair';
       cropBox.style.display = 'block';
-    } else if (tool === 'privacy') {
+    } else if (tool === 'censor' || tool === 'privacy') {
       editInfo.textContent = 'Drag to censor a region';
       canvasWrap.style.cursor = 'crosshair';
       cropBox.style.display = 'none';
@@ -699,7 +713,7 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
       });
     }
 
-    if (activeTool === 'privacy' && censorDragging && censorDragStart && censorDragCurrent) {
+    if (activeTool === 'censor' && censorDragging && censorDragStart && censorDragCurrent) {
       const x = Math.min(censorDragStart.x, censorDragCurrent.x);
       const y = Math.min(censorDragStart.y, censorDragCurrent.y);
       const w = Math.abs(censorDragCurrent.x - censorDragStart.x);
@@ -1033,6 +1047,72 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
     captureState();
   });
 
+  // ── Mobile mirror sliders/inputs — sync to desktop hidden equivalents ──
+  document.querySelectorAll('.mobile-mirror').forEach(el => {
+    const targetId = el.dataset.mirror;
+    const target = document.getElementById(targetId);
+    if (!target) return;
+
+    if (el.type === 'range') {
+      el.addEventListener('input', () => {
+        target.value = el.value;
+        target.dispatchEvent(new Event('input'));
+        // sync display val
+        const mVal = el.closest('.tool-controls').querySelector('.slider-val');
+        if (mVal) mVal.textContent = target.nextElementSibling
+          ? target.nextElementSibling.textContent
+          : el.value + (targetId === 'exportQualitySlider' ? '%' : '');
+      });
+      el.addEventListener('change', () => {
+        target.value = el.value;
+        target.dispatchEvent(new Event('change'));
+      });
+    } else if (el.type === 'checkbox') {
+      el.addEventListener('change', () => {
+        target.checked = el.checked;
+        target.dispatchEvent(new Event('change'));
+      });
+    }
+  });
+
+  // Mobile format group mirror
+  document.querySelectorAll('#exportFormatGroupM .pill').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#exportFormatGroupM .pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      // mirror to desktop
+      const fmt = btn.dataset.fmt;
+      document.querySelectorAll('#exportFormatGroup .pill').forEach(b => {
+        b.classList.toggle('active', b.dataset.fmt === fmt);
+      });
+      document.getElementById('#exportFormatGroup .pill.active') // trigger desktop listener
+      if (editIdx !== null) sourceFiles[editIdx].exportFormat = fmt;
+      const qualGroup = document.getElementById('exportQualityGroup');
+      const qualGroupM = document.getElementById('exportQualityGroupM');
+      const hide = fmt === 'image/png';
+      if (qualGroup) qualGroup.style.display = hide ? 'none' : 'flex';
+      if (qualGroupM) qualGroupM.style.display = hide ? 'none' : 'flex';
+    });
+  });
+
+  // Mobile resize (max W/H)
+  document.getElementById('exportMaxWM').addEventListener('input', e => {
+    const v = parseInt(e.target.value) || null;
+    if (editIdx !== null) sourceFiles[editIdx].exportMaxW = v;
+    const desktop = document.getElementById('exportMaxW');
+    if (desktop) desktop.value = e.target.value;
+  });
+
+  document.getElementById('exportMaxHM').addEventListener('input', e => {
+    const v = parseInt(e.target.value) || null;
+    if (editIdx !== null) sourceFiles[editIdx].exportMaxH = v;
+    const desktop = document.getElementById('exportMaxH');
+    if (desktop) desktop.value = e.target.value;
+  });
+
+  // Sync mobile mirrors when modal opens (in openEditModal)
+
+
   document.getElementById('stripExif').addEventListener('change', e => {
     stripExif = e.target.checked;
     document.getElementById('stripExifLabel').textContent = stripExif ? 'Remove EXIF on export' : 'Keep EXIF on export';
@@ -1063,12 +1143,12 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
   });
 
   function showCropBox() {
-    cropBox.style.display = activeTool === 'transform' ? 'block' : 'none';
+    cropBox.style.display = activeTool === 'crop' ? 'block' : 'none';
     cropBox.style.left   = cropState.x + 'px';
     cropBox.style.top    = cropState.y + 'px';
     cropBox.style.width  = cropState.w + 'px';
     cropBox.style.height = cropState.h + 'px';
-    editInfo.textContent = activeTool === 'transform' ? Math.round(cropState.w / editScale) + ' × ' + Math.round(cropState.h / editScale) + ' px' : '';
+    editInfo.textContent = activeTool === 'crop' ? Math.round(cropState.w / editScale) + ' × ' + Math.round(cropState.h / editScale) + ' px' : '';
   }
 
   function clampCropState() {
@@ -1102,7 +1182,7 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
     const pos = getEditPos(e);
     const tgt = e.target;
 
-    if (activeTool === 'transform') {
+    if (activeTool === 'crop') {
       if (tgt.classList.contains('crop-handle')) { dragMode = tgt.dataset.handle; }
       else if (tgt === cropBox) { dragMode = 'move'; }
       else { dragMode = 'draw'; cropState = { x: pos.x, y: pos.y, w: 0, h: 0 }; cropBox.style.display = 'block'; }
@@ -1111,7 +1191,7 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
       window.addEventListener('mouseup',   endEditDrag);
       window.addEventListener('touchmove', onEditDrag,  { passive: false });
       window.addEventListener('touchend',  endEditDrag);
-    } else if (activeTool === 'privacy') {
+    } else if (activeTool === 'censor') {
       censorDragStart   = { ...pos };
       censorDragCurrent = { ...pos };
       censorDragging    = true;

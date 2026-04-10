@@ -101,181 +101,7 @@
         <button class="modal-close" id="editModalClose">✕</button>
       </div>
 
-      <div class="edit-body">
-
-        <!-- Sidebar: accordion tools + pinned actions -->
-        <div class="edit-sidebar">
-
-          <!-- Tab buttons (horizontal on mobile) -->
-          <div class="mobile-tab-bar">
-            <button class="tool-btn active" data-tool="transform">
-              <span class="tool-icon">[ ]</span>
-              <span class="tool-label">Transform</span>
-            </button>
-            <button class="tool-btn" data-tool="appearance">
-              <span class="tool-icon">◑</span>
-              <span class="tool-label">Appearance</span>
-            </button>
-            <button class="tool-btn" data-tool="privacy">
-              <span class="tool-icon">◼</span>
-              <span class="tool-label">Privacy</span>
-            </button>
-            <button class="tool-btn" data-tool="export">
-              <span class="tool-icon">↓</span>
-              <span class="tool-label">Export</span>
-            </button>
-
-          </div>
-
-          <!-- Controls panels — shown below tab bar on mobile, inline on desktop -->
-          <div class="tool-controls open" id="controls-transform">
-              <div class="ctrl-group">
-                <span class="ctrl-label">Crop aspect</span>
-                <div class="aspect-btns">
-                  <button class="aspect-btn active" data-aspect="free">Free</button>
-                  <button class="aspect-btn" data-aspect="1:1">1:1</button>
-                  <button class="aspect-btn" data-aspect="4:3">4:3</button>
-                  <button class="aspect-btn" data-aspect="16:9">16:9</button>
-                  <button class="aspect-btn" data-aspect="3:2">3:2</button>
-                  <button class="aspect-btn" id="rotateAspectBtn" style="display:none;">⇄</button>
-                </div>
-                <div class="ctrl-row">
-                  <button class="ctrl-btn" id="resetCropBtn">Reset crop</button>
-                  <button class="ctrl-btn accent" id="applyCropBtn">Apply crop</button>
-                </div>
-              </div>
-              <div class="ctrl-divider"></div>
-              <div class="ctrl-group">
-                <span class="ctrl-label">Rotate &amp; Flip</span>
-                <div class="ctrl-row">
-                  <button class="ctrl-btn" id="rotateLeft">↺ 90° L</button>
-                  <button class="ctrl-btn" id="rotateRight">↻ 90° R</button>
-                  <button class="ctrl-btn" id="flipH">↔ H</button>
-                  <button class="ctrl-btn" id="flipV">↕ V</button>
-                </div>
-              </div>
-              <div class="ctrl-divider"></div>
-              <div class="ctrl-group">
-                <span class="ctrl-label">Resize</span>
-                <div class="ctrl-row">
-                  <div class="ctrl-field">
-                    <span class="ctrl-sublabel">W</span>
-                    <input type="number" class="number-input-sm" id="exportW" placeholder="px" min="1" max="8000" />
-                  </div>
-                  <div class="ctrl-field">
-                    <span class="ctrl-sublabel">H</span>
-                    <input type="number" class="number-input-sm" id="exportH" placeholder="px" min="1" max="8000" />
-                  </div>
-                </div>
-                <label class="toggle-wrap">
-                  <input type="checkbox" id="exportLockAspect" checked />
-                  <span class="toggle-label">Lock aspect</span>
-                </label>
-              </div>
-            </div>
-
-          <div class="tool-controls" id="controls-appearance">
-              <div class="ctrl-group">
-                <div class="ctrl-slider-row">
-                  <span class="ctrl-sublabel">Brightness</span>
-                  <input type="range" id="brightnessSlider" min="-100" max="100" value="0" step="1" />
-                  <span class="slider-val" id="brightnessVal">0</span>
-                </div>
-                <div class="ctrl-slider-row">
-                  <span class="ctrl-sublabel">Contrast</span>
-                  <input type="range" id="contrastSlider" min="-100" max="100" value="0" step="1" />
-                  <span class="slider-val" id="contrastVal">0</span>
-                </div>
-                <div class="ctrl-slider-row">
-                  <span class="ctrl-sublabel">Saturation</span>
-                  <input type="range" id="saturationSlider" min="-100" max="100" value="0" step="1" />
-                  <span class="slider-val" id="saturationVal">0</span>
-                </div>
-                <div class="ctrl-slider-row">
-                  <span class="ctrl-sublabel">Sharpen</span>
-                  <input type="range" id="sharpenSlider" min="0" max="10" value="0" step="1" />
-                  <span class="slider-val" id="sharpenVal">0</span>
-                </div>
-              </div>
-              <div class="ctrl-divider"></div>
-              <div class="ctrl-group">
-                <span class="ctrl-label">Filters</span>
-                <label class="toggle-wrap">
-                  <input type="checkbox" id="grayscaleToggle" />
-                  <span class="toggle-label">Grayscale</span>
-                </label>
-              </div>
-            </div>
-
-          <div class="tool-controls" id="controls-privacy">
-              <div class="ctrl-group">
-                <span class="ctrl-label">Censor</span>
-                <div class="pill-group" id="censorTypeGroup">
-                  <button class="pill active" data-censor="pixelate">Pixelate</button>
-                  <button class="pill" data-censor="blur">Blur</button>
-                  <button class="pill" data-censor="blackbox">Black</button>
-                </div>
-                <div class="ctrl-slider-row" id="censorStrengthGroup">
-                  <span class="ctrl-sublabel">Strength</span>
-                  <input type="range" id="censorStrengthSlider" min="0" max="10" value="5" step="1" />
-                  <span class="slider-val" id="censorStrengthVal">5</span>
-                </div>
-                <div class="ctrl-row">
-                  <button class="ctrl-btn" id="censorUndoBtn">↩ Undo</button>
-                  <button class="ctrl-btn" id="censorClearBtn">Clear</button>
-                </div>
-              </div>
-              <div class="ctrl-divider"></div>
-              <div class="ctrl-group">
-                <span class="ctrl-label">Metadata</span>
-                <label class="toggle-wrap">
-                  <input type="checkbox" id="stripExif" checked />
-                  <span class="toggle-label" id="stripExifLabel">Remove EXIF on export</span>
-                </label>
-                <span class="ctrl-sublabel" style="opacity:0.5; line-height:1.5;">Strips GPS, camera model,<br>timestamps from the file</span>
-              </div>
-            </div>
-
-          <div class="tool-controls" id="controls-export">
-              <div class="ctrl-group">
-                <span class="ctrl-label">Format</span>
-                <div class="pill-group" id="exportFormatGroup">
-                  <button class="pill active" data-fmt="image/jpeg">JPG</button>
-                  <button class="pill" data-fmt="image/png">PNG</button>
-                  <button class="pill" data-fmt="image/webp">WebP</button>
-                </div>
-              </div>
-              <div class="ctrl-group" id="exportQualityGroup">
-                <div class="ctrl-slider-row">
-                  <span class="ctrl-sublabel">Quality</span>
-                  <input type="range" id="exportQualitySlider" min="10" max="100" value="82" step="1" />
-                  <span class="slider-val" id="exportQualityVal">82%</span>
-                </div>
-              </div>
-              <div class="ctrl-group">
-                <span class="ctrl-label">Max size cap</span>
-                <div class="ctrl-row">
-                  <div class="ctrl-field">
-                    <span class="ctrl-sublabel">Max W</span>
-                    <input type="number" class="number-input-sm" id="exportMaxW" placeholder="px" min="1" max="8000" />
-                  </div>
-                  <div class="ctrl-field">
-                    <span class="ctrl-sublabel">Max H</span>
-                    <input type="number" class="number-input-sm" id="exportMaxH" placeholder="px" min="1" max="8000" />
-                  </div>
-                </div>
-              </div>
-            </div>
-
-          <!-- Undo / Redo + Actions — single bottom bar on mobile -->
-          <div class="mobile-bottom-bar">
-            <button class="ctrl-btn" id="undoBtn" disabled>↩ Undo</button>
-            <button class="ctrl-btn" id="redoBtn" disabled>↪ Redo</button>
-            <button class="ctrl-btn" id="editCancelBtn">Cancel</button>
-            <button class="ctrl-btn accent" id="editApplyBtn">Apply</button>
-          </div>
-
-        </div>
+      <div class="edit-body-wrap">
 
         <!-- Canvas -->
         <div class="edit-canvas-area">
@@ -295,10 +121,283 @@
           </div>
         </div>
 
-      </div>
-    </div>
-  </div>
+        <!-- Sidebar / bottom panel -->
+        <div class="edit-sidebar">
 
+          <!-- Desktop accordion buttons -->
+          <div class="desktop-tool-btns">
+            <button class="tool-btn active" data-tool="crop">
+              <span class="tool-icon">[ ]</span>
+              <span class="tool-label">Crop &amp; Rotate</span>
+            </button>
+            <button class="tool-btn" data-tool="adjust">
+              <span class="tool-icon">◑</span>
+              <span class="tool-label">Adjust</span>
+            </button>
+            <button class="tool-btn" data-tool="privacy">
+              <span class="tool-icon">◼</span>
+              <span class="tool-label">Privacy</span>
+            </button>
+            <button class="tool-btn" data-tool="export">
+              <span class="tool-icon">↓</span>
+              <span class="tool-label">Export</span>
+            </button>
+          </div>
+
+          <!-- ── CONTROLS PANELS ── -->
+
+          <!-- crop: aspect + rotate + flip (no resize) -->
+          <div class="tool-controls open" id="controls-crop">
+            <div class="ctrl-group">
+              <span class="ctrl-label">Crop aspect</span>
+              <div class="aspect-btns">
+                <button class="aspect-btn active" data-aspect="free">Free</button>
+                <button class="aspect-btn" data-aspect="1:1">1:1</button>
+                <button class="aspect-btn" data-aspect="4:3">4:3</button>
+                <button class="aspect-btn" data-aspect="16:9">16:9</button>
+                <button class="aspect-btn" data-aspect="3:2">3:2</button>
+                <button class="aspect-btn" id="rotateAspectBtn" style="display:none;">⇄</button>
+              </div>
+              <div class="ctrl-row">
+                <button class="ctrl-btn" id="resetCropBtn">Reset</button>
+                <button class="ctrl-btn accent" id="applyCropBtn">Apply crop</button>
+              </div>
+            </div>
+            <div class="ctrl-divider"></div>
+            <div class="ctrl-group">
+              <span class="ctrl-label">Rotate &amp; Flip</span>
+              <div class="ctrl-row">
+                <button class="ctrl-btn" id="rotateLeft">↺ 90° L</button>
+                <button class="ctrl-btn" id="rotateRight">↻ 90° R</button>
+                <button class="ctrl-btn" id="flipH">↔ H</button>
+                <button class="ctrl-btn" id="flipV">↕ V</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- adjust: all sliders + grayscale (desktop only grouping) -->
+          <div class="tool-controls" id="controls-adjust">
+            <div class="ctrl-group">
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Brightness</span>
+                <input type="range" id="brightnessSlider" min="-100" max="100" value="0" step="1" />
+                <span class="slider-val" id="brightnessVal">0</span>
+              </div>
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Contrast</span>
+                <input type="range" id="contrastSlider" min="-100" max="100" value="0" step="1" />
+                <span class="slider-val" id="contrastVal">0</span>
+              </div>
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Saturation</span>
+                <input type="range" id="saturationSlider" min="-100" max="100" value="0" step="1" />
+                <span class="slider-val" id="saturationVal">0</span>
+              </div>
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Sharpen</span>
+                <input type="range" id="sharpenSlider" min="0" max="10" value="0" step="1" />
+                <span class="slider-val" id="sharpenVal">0</span>
+              </div>
+              <label class="toggle-wrap" style="padding-top:4px;">
+                <input type="checkbox" id="grayscaleToggle" />
+                <span class="toggle-label">Grayscale</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- privacy: censor + exif -->
+          <div class="tool-controls" id="controls-privacy">
+            <div class="ctrl-group">
+              <span class="ctrl-label">Censor</span>
+              <div class="pill-group" id="censorTypeGroup">
+                <button class="pill active" data-censor="pixelate">Pixelate</button>
+                <button class="pill" data-censor="blur">Blur</button>
+                <button class="pill" data-censor="blackbox">Black</button>
+              </div>
+              <div class="ctrl-slider-row" id="censorStrengthGroup">
+                <span class="ctrl-sublabel">Strength</span>
+                <input type="range" id="censorStrengthSlider" min="0" max="10" value="5" step="1" />
+                <span class="slider-val" id="censorStrengthVal">5</span>
+              </div>
+              <div class="ctrl-row">
+                <button class="ctrl-btn" id="censorUndoBtn">↩ Undo</button>
+                <button class="ctrl-btn" id="censorClearBtn">Clear</button>
+              </div>
+            </div>
+            <div class="ctrl-divider"></div>
+            <div class="ctrl-group">
+              <span class="ctrl-label">Metadata</span>
+              <label class="toggle-wrap">
+                <input type="checkbox" id="stripExif" checked />
+                <span class="toggle-label" id="stripExifLabel">Remove EXIF on export</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- export: format + quality + max cap -->
+          <div class="tool-controls" id="controls-export">
+            <div class="ctrl-group">
+              <span class="ctrl-label">Format</span>
+              <div class="pill-group" id="exportFormatGroup">
+                <button class="pill active" data-fmt="image/jpeg">JPG</button>
+                <button class="pill" data-fmt="image/png">PNG</button>
+                <button class="pill" data-fmt="image/webp">WebP</button>
+              </div>
+            </div>
+            <div class="ctrl-group" id="exportQualityGroup">
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Quality</span>
+                <input type="range" id="exportQualitySlider" min="10" max="100" value="82" step="1" />
+                <span class="slider-val" id="exportQualityVal">82%</span>
+              </div>
+            </div>
+            <div class="ctrl-group">
+              <span class="ctrl-label">Max size</span>
+              <div class="ctrl-row">
+                <div class="ctrl-field">
+                  <span class="ctrl-sublabel">Max W</span>
+                  <input type="number" class="number-input-sm" id="exportMaxW" placeholder="px" min="1" max="8000" />
+                </div>
+                <div class="ctrl-field">
+                  <span class="ctrl-sublabel">Max H</span>
+                  <input type="number" class="number-input-sm" id="exportMaxH" placeholder="px" min="1" max="8000" />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- mobile-only individual adjust tabs (hidden on desktop) -->
+          <div class="tool-controls mobile-only" id="controls-brightness">
+            <div class="ctrl-group">
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Brightness</span>
+                <input type="range" class="mobile-mirror" data-mirror="brightnessSlider" min="-100" max="100" value="0" step="1" />
+                <span class="slider-val" id="brightnessValM">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="tool-controls mobile-only" id="controls-contrast">
+            <div class="ctrl-group">
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Contrast</span>
+                <input type="range" class="mobile-mirror" data-mirror="contrastSlider" min="-100" max="100" value="0" step="1" />
+                <span class="slider-val" id="contrastValM">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="tool-controls mobile-only" id="controls-saturation">
+            <div class="ctrl-group">
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Saturation</span>
+                <input type="range" class="mobile-mirror" data-mirror="saturationSlider" min="-100" max="100" value="0" step="1" />
+                <span class="slider-val" id="saturationValM">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="tool-controls mobile-only" id="controls-sharpen">
+            <div class="ctrl-group">
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Sharpen</span>
+                <input type="range" class="mobile-mirror" data-mirror="sharpenSlider" min="0" max="10" value="0" step="1" />
+                <span class="slider-val" id="sharpenValM">0</span>
+              </div>
+            </div>
+          </div>
+          <div class="tool-controls mobile-only" id="controls-grayscale">
+            <div class="ctrl-group" style="padding: 4px 0;">
+              <label class="toggle-wrap">
+                <input type="checkbox" class="mobile-mirror" data-mirror="grayscaleToggle" />
+                <span class="toggle-label">Grayscale</span>
+              </label>
+            </div>
+          </div>
+          <div class="tool-controls mobile-only" id="controls-format">
+            <div class="ctrl-group">
+              <div class="pill-group" id="exportFormatGroupM">
+                <button class="pill active" data-fmt="image/jpeg">JPG</button>
+                <button class="pill" data-fmt="image/png">PNG</button>
+                <button class="pill" data-fmt="image/webp">WebP</button>
+              </div>
+            </div>
+          </div>
+          <div class="tool-controls mobile-only" id="controls-quality">
+            <div class="ctrl-group" id="exportQualityGroupM">
+              <div class="ctrl-slider-row">
+                <span class="ctrl-sublabel">Quality</span>
+                <input type="range" class="mobile-mirror" data-mirror="exportQualitySlider" min="10" max="100" value="82" step="1" />
+                <span class="slider-val" id="exportQualityValM">82%</span>
+              </div>
+            </div>
+          </div>
+          <div class="tool-controls mobile-only" id="controls-resize">
+            <div class="ctrl-group">
+              <div class="ctrl-slider-row" style="gap:12px;">
+                <span class="ctrl-sublabel">Max W</span>
+                <input type="number" class="number-input-sm" id="exportMaxWM" placeholder="px" min="1" max="8000" />
+                <span class="ctrl-sublabel">Max H</span>
+                <input type="number" class="number-input-sm" id="exportMaxHM" placeholder="px" min="1" max="8000" />
+              </div>
+            </div>
+          </div>
+
+          <!-- Mobile tab bar -->
+          <div class="mobile-tab-bar">
+            <button class="tool-btn active" data-tool="crop">
+              <span class="tool-icon">[ ]</span>
+              <span class="tool-label">Crop</span>
+            </button>
+            <button class="tool-btn" data-tool="brightness">
+              <span class="tool-icon">☀</span>
+              <span class="tool-label">Bright</span>
+            </button>
+            <button class="tool-btn" data-tool="contrast">
+              <span class="tool-icon">◐</span>
+              <span class="tool-label">Contrast</span>
+            </button>
+            <button class="tool-btn" data-tool="saturation">
+              <span class="tool-icon">❋</span>
+              <span class="tool-label">Sat</span>
+            </button>
+            <button class="tool-btn" data-tool="sharpen">
+              <span class="tool-icon">◈</span>
+              <span class="tool-label">Sharpen</span>
+            </button>
+            <button class="tool-btn" data-tool="grayscale">
+              <span class="tool-icon">▨</span>
+              <span class="tool-label">B&amp;W</span>
+            </button>
+            <button class="tool-btn" data-tool="privacy">
+              <span class="tool-icon">◼</span>
+              <span class="tool-label">Privacy</span>
+            </button>
+            <button class="tool-btn" data-tool="format">
+              <span class="tool-icon">⬡</span>
+              <span class="tool-label">Format</span>
+            </button>
+            <button class="tool-btn" data-tool="quality">
+              <span class="tool-icon">◎</span>
+              <span class="tool-label">Quality</span>
+            </button>
+            <button class="tool-btn" data-tool="resize">
+              <span class="tool-icon">⤢</span>
+              <span class="tool-label">Resize</span>
+            </button>
+          </div>
+
+          <!-- Action bar -->
+          <div class="mobile-bottom-bar">
+            <button class="ctrl-btn" id="undoBtn" disabled>↩ Undo</button>
+            <button class="ctrl-btn" id="redoBtn" disabled>↪ Redo</button>
+            <button class="ctrl-btn" id="editCancelBtn">Cancel</button>
+            <button class="ctrl-btn accent" id="editApplyBtn">Apply</button>
+          </div>
+
+        </div><!-- /edit-sidebar -->
+
+      </div><!-- /edit-body-wrap -->
+
+    </div><!-- /edit-modal -->
+  </div>
   <div class="lightbox" id="lightbox">
     <img class="lightbox-img" id="lightboxImg" src="" alt="" />
     <div class="lightbox-name" id="lightboxName"></div>
