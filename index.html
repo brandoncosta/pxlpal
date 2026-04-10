@@ -106,13 +106,29 @@
         <!-- Sidebar: accordion tools + pinned actions -->
         <div class="edit-sidebar">
 
-          <!-- TRANSFORM -->
-          <div class="tool-section" id="section-transform">
+          <!-- Tab buttons (horizontal on mobile) -->
+          <div class="mobile-tab-bar">
             <button class="tool-btn active" data-tool="transform">
               <span class="tool-icon">[ ]</span>
               <span class="tool-label">Transform</span>
             </button>
-            <div class="tool-controls open" id="controls-transform">
+            <button class="tool-btn" data-tool="appearance">
+              <span class="tool-icon">◑</span>
+              <span class="tool-label">Appearance</span>
+            </button>
+            <button class="tool-btn" data-tool="privacy">
+              <span class="tool-icon">◼</span>
+              <span class="tool-label">Privacy</span>
+            </button>
+            <button class="tool-btn" data-tool="export">
+              <span class="tool-icon">↓</span>
+              <span class="tool-label">Export</span>
+            </button>
+
+          </div>
+
+          <!-- Controls panels — shown below tab bar on mobile, inline on desktop -->
+          <div class="tool-controls open" id="controls-transform">
               <div class="ctrl-group">
                 <span class="ctrl-label">Crop aspect</span>
                 <div class="aspect-btns">
@@ -157,15 +173,8 @@
                 </label>
               </div>
             </div>
-          </div>
 
-          <!-- APPEARANCE -->
-          <div class="tool-section" id="section-appearance">
-            <button class="tool-btn" data-tool="appearance">
-              <span class="tool-icon">◑</span>
-              <span class="tool-label">Appearance</span>
-            </button>
-            <div class="tool-controls" id="controls-appearance">
+          <div class="tool-controls" id="controls-appearance">
               <div class="ctrl-group">
                 <div class="ctrl-slider-row">
                   <span class="ctrl-sublabel">Brightness</span>
@@ -197,15 +206,8 @@
                 </label>
               </div>
             </div>
-          </div>
 
-          <!-- PRIVACY -->
-          <div class="tool-section" id="section-privacy">
-            <button class="tool-btn" data-tool="privacy">
-              <span class="tool-icon">◼</span>
-              <span class="tool-label">Privacy</span>
-            </button>
-            <div class="tool-controls" id="controls-privacy">
+          <div class="tool-controls" id="controls-privacy">
               <div class="ctrl-group">
                 <span class="ctrl-label">Censor</span>
                 <div class="pill-group" id="censorTypeGroup">
@@ -233,15 +235,8 @@
                 <span class="ctrl-sublabel" style="opacity:0.5; line-height:1.5;">Strips GPS, camera model,<br>timestamps from the file</span>
               </div>
             </div>
-          </div>
 
-          <!-- EXPORT -->
-          <div class="tool-section" id="section-export">
-            <button class="tool-btn" data-tool="export">
-              <span class="tool-icon">↓</span>
-              <span class="tool-label">Export</span>
-            </button>
-            <div class="tool-controls" id="controls-export">
+          <div class="tool-controls" id="controls-export">
               <div class="ctrl-group">
                 <span class="ctrl-label">Format</span>
                 <div class="pill-group" id="exportFormatGroup">
@@ -271,7 +266,6 @@
                 </div>
               </div>
             </div>
-          </div>
 
           <!-- Undo / Redo -->
           <div class="sidebar-history">
