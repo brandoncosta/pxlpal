@@ -538,7 +538,6 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
     document.getElementById('saturationVal').textContent = pendingSaturation;
     document.getElementById('sharpenSlider').value = pendingSharpen;
     document.getElementById('sharpenVal').textContent = pendingSharpen;
-    document.getElementById('grayscaleToggle').checked = pendingGrayscale;
     document.getElementById('stripExif').checked = stripExif;
 
     // Sync mobile mirror controls
@@ -1041,11 +1040,7 @@ function renderToCanvas(src, img, outW, outH, scaleX, scaleY) {
   });
   document.getElementById('sharpenSlider').addEventListener('change', () => captureState());
 
-  document.getElementById('grayscaleToggle').addEventListener('change', e => {
-    pendingGrayscale = e.target.checked;
-    redrawEditCanvas();
-    captureState();
-  });
+
 
   // ── Mobile mirror sliders/inputs — sync to desktop hidden equivalents ──
   document.querySelectorAll('.mobile-mirror').forEach(el => {
