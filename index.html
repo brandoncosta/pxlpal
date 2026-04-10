@@ -101,9 +101,8 @@
         <button class="modal-close" id="editModalClose">✕</button>
       </div>
 
+      <!-- Canvas: grid-row 2 on mobile, flex sibling on desktop -->
       <div class="edit-body-wrap">
-
-        <!-- Canvas -->
         <div class="edit-canvas-area">
           <div class="crop-canvas-wrap" id="canvasWrap">
             <canvas id="editCanvas"></canvas>
@@ -120,9 +119,10 @@
             <div class="crop-info" id="editInfo"></div>
           </div>
         </div>
+      </div><!-- /edit-body-wrap -->
 
-        <!-- Sidebar / bottom panel -->
-        <div class="edit-sidebar">
+      <!-- Sidebar: grid-row 3 on mobile, flex sibling on desktop -->
+      <div class="edit-sidebar">
 
           <!-- Desktop accordion buttons -->
           <div class="desktop-tool-btns">
@@ -392,9 +392,7 @@
             <button class="ctrl-btn accent" id="editApplyBtn">Apply</button>
           </div>
 
-        </div><!-- /edit-sidebar -->
-
-      </div><!-- /edit-body-wrap -->
+      </div><!-- /edit-sidebar -->
 
     </div><!-- /edit-modal -->
   </div>
